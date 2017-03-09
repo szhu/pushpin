@@ -5,7 +5,7 @@ Pinned tabs in Chrome are nice, but if you expect to always have the same set
 of pinned tabs open, you may be frustrated by how unpersistent they are.
 **Pushpin is here to help.**
 
-![](resources/screenshot-0@2x.png)
+![](resources/screencast-0-800@15.gif)
 
 Usage
 -----
