@@ -1,20 +1,23 @@
 Pushpin
 =======
 
-Pinned tabs in Chrome are nice, but if you expect to always have the same set of pinned tabs open, you may be frustrated by how unpersistent they are.
+Pinned tabs in Chrome are nice, but if you expect to always have the same set
+of pinned tabs open, you may be frustrated by how unpersistent they are.
+**Pushpin is here to help.**
 
-Pushpin is here to help.
-
+![](resources/screenshot-0@2x.png)
 
 Usage
 -----
 
+[Install Pushpin from the Chrome Web Store.](https://chrome.google.com/webstore/detail/oeccdogiekfcglkneepeaodoendiikic)
+
 **Configure your favorite set of pinned tabs in the extension options.**
 
-**Click Pushpin to make the pinned tabs appear in the current window.** If
-they're open, Pushpin will move them to the current window. This will preserve
-tab settings, like whether audio is muted. If they're not open, Pushpin will
-open them for you.
+Not sure where your pinned tabs are? **Click Pushpin to make the pinned tabs
+appear in the current window.** If they're open in another window, Pushpin will
+move them to the current window. This will preserve tab settings, like whether
+audio is muted. If the pinned tabs aren't open, Pushpin will open them for you.
 
 Webapps are buggy sometimes, especially after going offline. **Double-click
 Pushpin to reload all your pinned tabs.**
