@@ -1,0 +1,30 @@
+{
+  "manifest_version": 2,
+  "name": "Pushpin",
+  "description": "Keep your favorite pinned tabs around.",
+  "version": "0.1.0",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs"
+  ],
+  "background": {
+    "scripts": [
+      "base.js",
+      "background.js"
+    ],
+    "persistent": false
+  },
+  "options_page": "options.html",
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
+  },
+  "browser_action": {
+    "default_title": "Pushpin"
+  },
+  "icons": {
+    "24": "icon24.png",
+    "48": "icon48.png"
+  }
+}
