@@ -1,7 +1,6 @@
 /* jshint esversion: 6 */
 /* jshint eqnull: true */
 
-
 var IterUtil = {
   // Return the item in items with the largest getKeyByItem(item).
   max: function(items, getKeyByItem) {
@@ -27,7 +26,7 @@ var IterUtil = {
     for (let key in unzipped) {
       let vals = unzipped[key];
       for (var i = 0; i < vals.length; i++) {
-        zipped[i] = (zipped[i] || {});
+        zipped[i] = zipped[i] || {};
         zipped[i][key] = vals[i];
       }
     }
@@ -35,24 +34,23 @@ var IterUtil = {
   },
 };
 
-
 var PromiseUtil = {
   // Like Promise.all, but with objects.
   map: function(promiseByKey) {
     var keys = Object.keys(promiseByKey);
-    return Promise.resolve().then(() => {
-      return Promise.all(keys.map(key => promiseByKey[key]));
-    }).then(results => {
-      resultsByKey = {};
-      for (var i = 0; i < keys.length; i++) {
-        resultsByKey[keys[i]] = results[i];
-      }
-      return resultsByKey;
-    });
-  }
-
+    return Promise.resolve()
+      .then(() => {
+        return Promise.all(keys.map((key) => promiseByKey[key]));
+      })
+      .then((results) => {
+        resultsByKey = {};
+        for (var i = 0; i < keys.length; i++) {
+          resultsByKey[keys[i]] = results[i];
+        }
+        return resultsByKey;
+      });
+  },
 };
-
 
 var TimerUtil = {
   // A promise-returning version of setTimeout.
@@ -91,9 +89,9 @@ var TimerUtil = {
   },
 
   // Detect double-clicking-like actions.
-  DoubleAction: function({timeout, onSingle, onDouble}) {
+  DoubleAction: function({ timeout, onSingle, onDouble }) {
     if (!(this instanceof TimerUtil.DoubleAction)) {
-      throw "TimerUtil.DoubleAction must be initialized using new";
+      throw 'TimerUtil.DoubleAction must be initialized using new';
     }
     this.timeout = timeout;
     this.onSingle = onSingle;
@@ -111,8 +109,7 @@ var TimerUtil = {
       if (this.timeoutId != null) {
         // console.log("Double!");
         this._dispatch(this.onDouble);
-      }
-      else {
+      } else {
         // console.log("Starting timer...");
         this.timeoutId = setTimeout(() => {
           // console.log("Single!");
@@ -120,18 +117,15 @@ var TimerUtil = {
         }, this.timeout);
       }
     };
-
   },
-
 };
 
 // https://gist.github.com/josh/8177583
 var DOMUtil = {
-  ready: new Promise(resolve => {
+  ready: new Promise((resolve) => {
     if (document.readyState === 'complete') {
       resolve();
-    }
-    else {
+    } else {
       let onReady = () => {
         resolve();
         document.removeEventListener('DOMContentLoaded', onReady, true);
@@ -141,22 +135,25 @@ var DOMUtil = {
       window.addEventListener('load', onReady, true);
     }
   }),
-
 };
-
 
 var ChromeApiUtil = {
   // Make a promise-returning versions of the chrome API method.
   makePromiseVersion: function(theThis, theMethod, theMethodName) {
     return (...theArguments) => {
       return new Promise((resolve, reject) => {
-        theMethod.apply(theThis, theArguments.concat(result => {
-          return (chrome.runtime.lastError == null) ? resolve(result) : reject({
-            function: theMethodName,
-            arguments: theArguments,
-            error: chrome.runtime.lastError,
-          });
-        }));
+        theMethod.apply(
+          theThis,
+          theArguments.concat((result) => {
+            return chrome.runtime.lastError == null
+              ? resolve(result)
+              : reject({
+                  function: theMethodName,
+                  arguments: theArguments,
+                  error: chrome.runtime.lastError,
+                });
+          }),
+        );
       });
     };
   },
@@ -181,13 +178,14 @@ var ChromeApiUtil = {
 
     var dstParent = dstRoot;
     for (let methodParentPart of methodParentParts.slice(1)) {
-      if (dstParent[methodParentPart] == null)
-        dstParent[methodParentPart] = {};
+      if (dstParent[methodParentPart] == null) dstParent[methodParentPart] = {};
       dstParent = dstParent[methodParentPart];
     }
     // Now dstParent == dstRoot.some.thing.tabs
     dstParent[methodName] = this.makePromiseVersion(
-      srcParent, srcParent[methodName], fullMethodName
+      srcParent,
+      srcParent[methodName],
+      fullMethodName,
     );
   },
 
@@ -200,15 +198,14 @@ var ChromeApiUtil = {
   },
 };
 
-
 var Urls = {
   stringify: function(urls) {
-    return urls.map(url => url + '\n').join('');
+    return urls.map((url) => url + '\n').join('');
   },
 
   parse: function(urlsAsText) {
     // Filter out blank lines
-    return urlsAsText.split('\n').filter(line => line);
+    return urlsAsText.split('\n').filter((line) => line);
   },
 
   normalize: function(urlsAsText) {
@@ -224,15 +221,14 @@ var Urls = {
   },
 
   load: function() {
-    return Promise.resolve().then(() => {
-      return Chrome.storage.sync.get({
-        urls: '',
+    return Promise.resolve()
+      .then(() => {
+        return Chrome.storage.sync.get({
+          urls: '',
+        });
+      })
+      .then(({ urls }) => {
+        return this.parse(urls);
       });
-    }).then(({
-      urls
-    }) => {
-      return this.parse(urls);
-    });
   },
-
 };

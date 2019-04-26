@@ -1,54 +1,52 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>Options</title>
+    <style type="text/css">
+      html {
+        height: 50px;
+        min-width: 500px;
+        display: flex;
+        flex-direction: column;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+      group {
+        display: flex;
+        flex-direction: column;
+      }
+      group + group {
+        margin: 1em 0 0;
+      }
+      textarea {
+        display: block;
+        width: 100%;
+        resize: none;
+      }
+      .stretch {
+        flex-grow: 1;
+      }
+    </style>
+    <script src="base.js"></script>
+    <script src="options.js"></script>
+  </head>
 
-<head>
-  <title>Options</title>
-  <style type="text/css">
-    html {
-      height: 50px;
-      min-width: 500px;
-      display: flex;
-      flex-direction: column;
-    }
-    body {
-      display: flex;
-      flex-direction: column;
-    }
-    group {
-      display: flex;
-      flex-direction: column;
-    }
-    group + group {
-      margin: 1em 0 0;
-    }
-    textarea {
-      display: block;
-      width: 100%;
-      resize: none;
-    }
-    .stretch {
-      flex-grow: 1;
-    }
-  </style>
-  <script src="base.js"></script>
-  <script src="options.js"></script>
-</head>
-
-<body class="stretch">
-  <group class="stretch">
-    <label for="js-input-urls">
-      Pinned tab URLs:
-    </label>
-    <textarea class="stretch" id="js-input-urls"></textarea>
-  </group>
-  <group>
-    <div>
-      <button id="js-submit">
-        Save
-      </button>
-      <span id="js-status"></span>
-    </div>
-  </group>
-</body>
-
+  <body class="stretch">
+    <group class="stretch">
+      <label for="js-input-urls">
+        Pinned tab URLs:
+      </label>
+      <textarea class="stretch" id="js-input-urls"></textarea>
+    </group>
+    <group>
+      <div>
+        <button id="js-submit">
+          Save
+        </button>
+        <span id="js-status"></span>
+      </div>
+    </group>
+  </body>
 </html>
