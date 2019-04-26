@@ -1,7 +1,7 @@
 /* jshint esversion: 6 */
 /* jshint eqnull: true */
 
-Chrome = ChromeApiUtil.getPromiseVersions([
+let Chrome = ChromeApiUtil.getPromiseVersions([
   'chrome.storage.sync.get',
   'chrome.storage.sync.set',
   'chrome.tabs.create',
@@ -72,7 +72,7 @@ function openPinnedTabUrlsInWindow(pinnedTabUrls, window) {
 function updateTabsWithUrls(tabs, urls) {
   return Promise.all(
     IterUtil.mapzip({ tab: tabs, url: urls }).map(({ tab, url }) => {
-      return Chrome.tabs.update(tab.id, { url: url });
+      return Chrome.tabs.update(tab.id, { url });
     }),
   );
 }
@@ -94,7 +94,7 @@ function movePinnedTabsToWindow(tabs, window) {
     .then((tabsToPin) => {
       return Promise.all(
         tabsToPin.map((tabToPin) => {
-          Chrome.tabs.update(tabToPin.id, { pinned: true });
+          return Chrome.tabs.update(tabToPin.id, { pinned: true });
         }),
       );
     });
@@ -113,13 +113,14 @@ function redoPinnedTabs(pinnedTabUrlsPromise, refresh) {
       });
     })
     .then(({ frontmostWindow, pinnedTabUrls, windowWithPinnedTabs }) => {
-      var { pinnedTabs } = windowWithPinnedTabs;
+      let { pinnedTabs } = windowWithPinnedTabs;
 
       // If the correct number of tabs are open, we can keep the existing tabs.
       if (pinnedTabs.length === pinnedTabUrls.length) {
         return Promise.resolve()
           .then(() => {
-            if (windowWithPinnedTabs.id === frontmostWindow.id) return;
+            if (windowWithPinnedTabs.id === frontmostWindow.id)
+              return undefined;
 
             // If window with pinned tabs isn't frontmost:
             return Promise.all([
@@ -138,7 +139,7 @@ function redoPinnedTabs(pinnedTabUrlsPromise, refresh) {
             ]);
           })
           .then(() => {
-            if (!refresh) return;
+            if (!refresh) return undefined;
 
             // If `refresh`, refresh all the tabs.
             return updateTabsWithUrls(pinnedTabs, pinnedTabUrls);
@@ -146,16 +147,15 @@ function redoPinnedTabs(pinnedTabUrlsPromise, refresh) {
       }
 
       // If the wrong number of tabs are open, close and reopen all of them.
-      else {
-        return Promise.all([
-          Chrome.tabs.remove(pinnedTabs.map((tab) => tab.id)),
-          openPinnedTabUrlsInWindow(pinnedTabUrls, frontmostWindow),
-        ]);
-      }
+
+      return Promise.all([
+        Chrome.tabs.remove(pinnedTabs.map((tab) => tab.id)),
+        openPinnedTabUrlsInWindow(pinnedTabUrls, frontmostWindow),
+      ]);
     });
 }
 
-clickBrowserAction = new TimerUtil.DoubleAction({
+let clickBrowserAction = new TimerUtil.DoubleAction({
   timeout: 300,
   onSingle: () => {
     redoPinnedTabs(Urls.load(), false);

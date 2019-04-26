@@ -1,9 +1,9 @@
 /* jshint esversion: 6 */
 /* jshint eqnull: true */
 
-var IterUtil = {
+let IterUtil = {
   // Return the item in items with the largest getKeyByItem(item).
-  max: function(items, getKeyByItem) {
+  max(items, getKeyByItem) {
     return items.reduce((item1, item2) => {
       return getKeyByItem(item1) > getKeyByItem(item2) ? item1 : item2;
     });
@@ -11,7 +11,7 @@ var IterUtil = {
 
   // Zip that works with iterables.
   // From http://stackoverflow.com/a/10284006/782045
-  zip: function(rows) {
+  zip(rows) {
     return rows[0].map((_, c) => {
       return rows.map((row) => row[c]);
     });
@@ -21,11 +21,11 @@ var IterUtil = {
   // Example:
   // - input: {num: [1, 2, 3], str: ["a", "b", "c"]}
   // - output: [{num: 1, str: "a"}, {num: 2, str: "b"}, {num: 3, str: "c"}]
-  mapzip: function(unzipped) {
-    zipped = [];
-    for (let key in unzipped) {
+  mapzip(unzipped) {
+    let zipped = [];
+    for (let key of Object.keys(unzipped)) {
       let vals = unzipped[key];
-      for (var i = 0; i < vals.length; i++) {
+      for (let i = 0; i < vals.length; i++) {
         zipped[i] = zipped[i] || {};
         zipped[i][key] = vals[i];
       }
@@ -34,17 +34,17 @@ var IterUtil = {
   },
 };
 
-var PromiseUtil = {
+let PromiseUtil = {
   // Like Promise.all, but with objects.
-  map: function(promiseByKey) {
-    var keys = Object.keys(promiseByKey);
+  map(promiseByKey) {
+    let keys = Object.keys(promiseByKey);
     return Promise.resolve()
       .then(() => {
         return Promise.all(keys.map((key) => promiseByKey[key]));
       })
       .then((results) => {
-        resultsByKey = {};
-        for (var i = 0; i < keys.length; i++) {
+        let resultsByKey = {};
+        for (let i = 0; i < keys.length; i++) {
           resultsByKey[keys[i]] = results[i];
         }
         return resultsByKey;
@@ -52,12 +52,12 @@ var PromiseUtil = {
   },
 };
 
-var TimerUtil = {
+let TimerUtil = {
   // A promise-returning version of setTimeout.
-  setTimeout: function(timeout) {
-    var timerId;
-    var rejectFunction;
-    var promise = new Promise((resolve, reject) => {
+  setTimeout(timeout) {
+    let timerId;
+    let rejectFunction;
+    let promise = new Promise((resolve, reject) => {
       timerId = setTimeout(resolve, timeout);
       rejectFunction = reject;
     });
@@ -69,10 +69,10 @@ var TimerUtil = {
   },
 
   // A promise-returning use case of setInterval.
-  pollUntil: function(interval, stopCondition) {
-    var intervalId;
-    var rejectFunction;
-    var promise = new Promise((resolve, reject) => {
+  pollUntil(interval, stopCondition) {
+    let intervalId;
+    let rejectFunction;
+    let promise = new Promise((resolve, reject) => {
       intervalId = setInterval(() => {
         if (stopCondition()) {
           clearInterval(intervalId);
@@ -82,29 +82,31 @@ var TimerUtil = {
       rejectFunction = reject;
     });
     promise.cancel = () => {
-      cancelInterval(intervalId);
+      window.cancelInterval(intervalId);
       rejectFunction();
     };
     return promise;
   },
 
   // Detect double-clicking-like actions.
-  DoubleAction: function({ timeout, onSingle, onDouble }) {
-    if (!(this instanceof TimerUtil.DoubleAction)) {
-      throw 'TimerUtil.DoubleAction must be initialized using new';
+  DoubleAction: class DoubleAction {
+    constructor({ timeout, onSingle, onDouble }) {
+      if (!(this instanceof TimerUtil.DoubleAction)) {
+        throw new Error('TimerUtil.DoubleAction must be initialized using new');
+      }
+      this.timeout = timeout;
+      this.onSingle = onSingle;
+      this.onDouble = onDouble;
+      this.timeoutId = undefined;
     }
-    this.timeout = timeout;
-    this.onSingle = onSingle;
-    this.onDouble = onDouble;
-    this.timeoutId = undefined;
 
-    this._dispatch = (callback) => {
+    _dispatch = (callback) => {
       clearTimeout(this.timeoutId);
       this.timeoutId = undefined;
       callback();
     };
 
-    this.trigger = () => {
+    trigger = () => {
       // console.log("Click!");
       if (this.timeoutId != null) {
         // console.log("Double!");
@@ -121,7 +123,7 @@ var TimerUtil = {
 };
 
 // https://gist.github.com/josh/8177583
-var DOMUtil = {
+let DOMUtil = {
   ready: new Promise((resolve) => {
     if (document.readyState === 'complete') {
       resolve();
@@ -137,9 +139,9 @@ var DOMUtil = {
   }),
 };
 
-var ChromeApiUtil = {
+let ChromeApiUtil = {
   // Make a promise-returning versions of the chrome API method.
-  makePromiseVersion: function(theThis, theMethod, theMethodName) {
+  makePromiseVersion(theThis, theMethod, theMethodName) {
     return (...theArguments) => {
       return new Promise((resolve, reject) => {
         theMethod.apply(
@@ -147,11 +149,13 @@ var ChromeApiUtil = {
           theArguments.concat((result) => {
             return chrome.runtime.lastError == null
               ? resolve(result)
-              : reject({
-                  function: theMethodName,
-                  arguments: theArguments,
-                  error: chrome.runtime.lastError,
-                });
+              : reject(
+                  new Error({
+                    function: theMethodName,
+                    arguments: theArguments,
+                    error: chrome.runtime.lastError,
+                  }),
+                );
           }),
         );
       });
@@ -160,23 +164,23 @@ var ChromeApiUtil = {
 
   // Make a promise-returning versions of the chrome API method,
   // given a string like "chrome.windows.create".
-  assignPromiseVersionByMethodName: function(dstRoot, fullMethodName) {
+  assignPromiseVersionByMethodName(dstRoot, fullMethodName) {
     // Example: let fullMethodName = 'chrome.some.thing.tabs.create'
-    var methodParentParts = fullMethodName.split('.');
+    let methodParentParts = fullMethodName.split('.');
     // Now methodParentParts == ['chrome', 'some', 'thing', 'tabs', 'create']
 
-    var [methodName] = methodParentParts.splice(-1);
+    let [methodName] = methodParentParts.splice(-1);
     // Now methodParentParts == ['chrome', 'some', 'thing', 'tabs']
     // Now methodName == 'create'
 
-    var srcParent = window;
+    let srcParent = window;
     for (let methodParentPart of methodParentParts) {
       srcParent = srcParent[methodParentPart];
     }
     // Now srcParent == window.chrome.some.thing.tabs
-    srcMethod = srcParent[methodName];
+    // srcMethod = srcParent[methodName]; // TODO: is this line necessary?
 
-    var dstParent = dstRoot;
+    let dstParent = dstRoot;
     for (let methodParentPart of methodParentParts.slice(1)) {
       if (dstParent[methodParentPart] == null) dstParent[methodParentPart] = {};
       dstParent = dstParent[methodParentPart];
@@ -189,8 +193,8 @@ var ChromeApiUtil = {
     );
   },
 
-  getPromiseVersions: function(fullMethodNames) {
-    var dstRoot = {};
+  getPromiseVersions(fullMethodNames) {
+    let dstRoot = {};
     for (let fullMethodName of fullMethodNames) {
       this.assignPromiseVersionByMethodName(dstRoot, fullMethodName);
     }
@@ -198,21 +202,21 @@ var ChromeApiUtil = {
   },
 };
 
-var Urls = {
-  stringify: function(urls) {
-    return urls.map((url) => url + '\n').join('');
+let Urls = {
+  stringify(urls) {
+    return urls.map((url) => `${url}\n`).join('');
   },
 
-  parse: function(urlsAsText) {
+  parse(urlsAsText) {
     // Filter out blank lines
     return urlsAsText.split('\n').filter((line) => line);
   },
 
-  normalize: function(urlsAsText) {
+  normalize(urlsAsText) {
     return this.stringify(this.parse(urlsAsText));
   },
 
-  saveText: function(urlsAsText) {
+  saveText(urlsAsText) {
     return Promise.resolve().then(() => {
       return Chrome.storage.sync.set({
         urls: this.normalize(urlsAsText),
@@ -220,7 +224,7 @@ var Urls = {
     });
   },
 
-  load: function() {
+  load() {
     return Promise.resolve()
       .then(() => {
         return Chrome.storage.sync.get({

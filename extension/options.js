@@ -1,16 +1,16 @@
 /* jshint esversion: 6 */
 /* jshint eqnull: true */
 
-var Chrome = ChromeApiUtil.getPromiseVersions([
+let Chrome = ChromeApiUtil.getPromiseVersions([
   'chrome.storage.sync.get',
   'chrome.storage.sync.set',
 ]);
 
-var Options = {
-  save: function() {
+let Options = {
+  save() {
     Promise.resolve()
       .then(() => {
-        var urlsAsText = document.getElementById('js-input-urls').value;
+        let urlsAsText = document.getElementById('js-input-urls').value;
         return Urls.saveText(urlsAsText);
       })
       .then(() => {
@@ -27,7 +27,7 @@ var Options = {
       });
   },
 
-  restore: function() {
+  restore() {
     return Promise.resolve()
       .then(() => {
         return Urls.load();
