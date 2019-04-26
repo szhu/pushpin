@@ -1,6 +1,3 @@
-/* jshint esversion: 6 */
-/* jshint eqnull: true */
-
 let Chrome = ChromeApiUtil.getPromiseVersions([
   'chrome.storage.sync.get',
   'chrome.storage.sync.set',

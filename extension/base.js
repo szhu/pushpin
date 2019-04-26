@@ -1,6 +1,3 @@
-/* jshint esversion: 6 */
-/* jshint eqnull: true */
-
 let IterUtil = {
   // Return the item in items with the largest getKeyByItem(item).
   max(items, getKeyByItem) {
