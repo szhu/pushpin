@@ -1,4 +1,4 @@
-let IterUtil = {
+export const IterUtil = {
   // Return the item in items with the largest getKeyByItem(item).
   max(items, getKeyByItem) {
     return items.reduce((item1, item2) => {
@@ -31,7 +31,7 @@ let IterUtil = {
   },
 };
 
-let PromiseUtil = {
+export const PromiseUtil = {
   // Like Promise.all, but with objects.
   map(promiseByKey) {
     let keys = Object.keys(promiseByKey);
@@ -49,7 +49,7 @@ let PromiseUtil = {
   },
 };
 
-let TimerUtil = {
+export const TimerUtil = {
   // A promise-returning version of setTimeout.
   setTimeout(timeout) {
     let timerId;
@@ -120,7 +120,7 @@ let TimerUtil = {
 };
 
 // https://gist.github.com/josh/8177583
-let DOMUtil = {
+export const DOMUtil = {
   ready: new Promise((resolve) => {
     if (document.readyState === 'complete') {
       resolve();
@@ -136,7 +136,7 @@ let DOMUtil = {
   }),
 };
 
-let ChromeApiUtil = {
+export const ChromeApiUtil = {
   // Make a promise-returning versions of the chrome API method.
   makePromiseVersion(theThis, theMethod, theMethodName) {
     return (...theArguments) => {
@@ -199,7 +199,12 @@ let ChromeApiUtil = {
   },
 };
 
-let Urls = {
+export const Chrome = ChromeApiUtil.getPromiseVersions([
+  'chrome.storage.sync.get',
+  'chrome.storage.sync.set',
+]);
+
+export const Urls = {
   stringify(urls) {
     return urls.map((url) => `${url}\n`).join('');
   },

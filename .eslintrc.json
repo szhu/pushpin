@@ -15,10 +15,12 @@
     "sourceType": "module"
   },
   "rules": {
+    "import/extensions": ["error", "always"],
     "no-plusplus": "off",
     "no-restricted-syntax": ["error", "LabeledStatement", "WithStatement"],
     "no-underscore-dangle": "off",
     "no-unused-vars": "off",
-    "prefer-const": "off"
+    "prefer-const": "off",
+    "sort-imports": "warn"
   }
 }

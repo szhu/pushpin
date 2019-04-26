@@ -9,10 +9,7 @@
     "tabs"
   ],
   "background": {
-    "scripts": [
-      "base.js",
-      "background.js"
-    ],
+    "page": "background.html",
     "persistent": false
   },
   "options_page": "options.html",

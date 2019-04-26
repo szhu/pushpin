@@ -1,3 +1,11 @@
+import {
+  ChromeApiUtil,
+  IterUtil,
+  PromiseUtil,
+  TimerUtil,
+  Urls,
+} from './base.js';
+
 let Chrome = ChromeApiUtil.getPromiseVersions([
   'chrome.storage.sync.get',
   'chrome.storage.sync.set',
@@ -40,6 +48,7 @@ function getWindowWithPinnedTabs() {
               pinned: true,
             })
             .then((pinnedTabs) => {
+              // eslint-disable-next-line no-param-reassign
               window.pinnedTabs = pinnedTabs;
               return window;
             });

@@ -1,7 +1,4 @@
-let Chrome = ChromeApiUtil.getPromiseVersions([
-  'chrome.storage.sync.get',
-  'chrome.storage.sync.set',
-]);
+import { DOMUtil, TimerUtil, Urls } from './base.js';
 
 let Options = {
   save() {
