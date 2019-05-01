@@ -9,7 +9,9 @@ class CancellablePromise extends Promise {
   }
 }
 
-// A promise-returning version of setTimeout.
+/**
+ * A promise-returning version of setTimeout.
+ */
 export function setTimeout(timeout) {
   let timerId;
   let rejectFunction;
@@ -24,7 +26,9 @@ export function setTimeout(timeout) {
   return new CancellablePromise(init, cancel);
 }
 
-// A promise-returning use case of setInterval.
+/**
+ * A promise-returning use case of setInterval.
+ */
 export function pollUntil(interval, stopCondition) {
   let intervalId;
   let rejectFunction;
@@ -44,7 +48,9 @@ export function pollUntil(interval, stopCondition) {
   return new CancellablePromise(init, cancel);
 }
 
-// Detect double-clicking-like actions.
+/**
+ * Detect double-clicking-like actions.
+ */
 export class DoubleAction {
   constructor({ timeout, onSingle, onDouble }) {
     if (!(this instanceof DoubleAction)) {

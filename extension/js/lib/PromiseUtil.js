@@ -1,4 +1,6 @@
-// Like Promise.all, but with objects.
+/**
+ * Like Promise.all, but with objects.
+ */
 export function map(promiseByKey) {
   let keys = Object.keys(promiseByKey);
   return Promise.resolve()

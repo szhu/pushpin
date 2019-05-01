@@ -26,10 +26,12 @@ let Chrome = ChromeApiUtil.getPromiseVersions([
   'chrome.windows.update',
 ]);
 
-// Get the window with the most pinned tabs.
-// Extra properties:
-// - tabs: a list of tabs
-// - pinnedTabs: a list of the pinned tabs
+/**
+ * Get the window with the most pinned tabs.
+ * Extra properties:
+ * - tabs: a list of tabs
+ * - pinnedTabs: a list of the pinned tabs
+ */
 function getWindowWithPinnedTabs() {
   return Promise.resolve()
     .then(() => {

@@ -1,4 +1,6 @@
-// Make a promise-returning versions of the chrome API method.
+/**
+ * Make a promise-returning versions of the chrome API method.
+ */
 export function makePromiseVersion(theThis, theMethod, theMethodName) {
   return (...theArguments) => {
     return new Promise((resolve, reject) => {
@@ -18,8 +20,10 @@ export function makePromiseVersion(theThis, theMethod, theMethodName) {
   };
 }
 
-// Make a promise-returning versions of the chrome API method,
-// given a string like "chrome.windows.create".
+/**
+ * Make a promise-returning versions of the chrome API method, given a string like
+ * "chrome.windows.create".
+ */
 export function assignPromiseVersionByMethodName(dstRoot, fullMethodName) {
   // Example: let fullMethodName = 'chrome.some.thing.tabs.create'
   let methodParentParts = fullMethodName.split('.');
