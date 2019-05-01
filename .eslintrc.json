@@ -14,7 +14,7 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "plugins": ["sort-imports-es6-autofix"],
+  "plugins": ["only-warn", "sort-imports-es6-autofix"],
   "rules": {
     "import/extensions": ["error", "always"],
     "import/no-default-export": "error",
@@ -25,7 +25,7 @@
     "no-unused-vars": "off",
     "prefer-const": "off",
     "prefer-promise-reject-errors": "off",
-    "sort-imports-es6-autofix/sort-imports-es6": "warn",
-    "sort-imports": "warn"
+    "sort-imports-es6-autofix/sort-imports-es6": "error",
+    "sort-imports": "error"
   }
 }
