@@ -9,19 +9,19 @@
     "tabs"
   ],
   "background": {
-    "page": "background.html",
+    "page": "page-background.html",
     "persistent": false
   },
-  "options_page": "options.html",
+  "options_page": "page-options.html",
   "options_ui": {
-    "page": "options.html",
+    "page": "page-options.html",
     "chrome_style": true
   },
   "browser_action": {
     "default_title": "Pushpin"
   },
   "icons": {
-    "24": "icon24.png",
-    "48": "icon48.png"
+    "24": "img/icon24.png",
+    "48": "img/icon48.png"
   }
 }
