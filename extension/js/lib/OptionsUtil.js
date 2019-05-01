@@ -8,32 +8,23 @@ export const Elements = {
   Submit: /** @type {HTMLElement} */ ($('#js-submit')),
 };
 
-export function save() {
-  Promise.resolve()
-    .then(() => {
-      let urlsAsText = Elements.InputUrls.value;
-      return Urls.saveText(urlsAsText);
-    })
-    .then(() => {
-      return this.restore();
-    })
-    .then(() => {
-      Elements.Status.textContent = 'Options saved.';
-    })
-    .then(() => {
-      return TimerUtil.setTimeout(2000);
-    })
-    .then(() => {
-      Elements.Status.textContent = '';
-    });
+export async function save() {
+  let urlsAsText = Elements.InputUrls.value;
+  await Urls.saveText(urlsAsText);
+  this.restore();
+  Elements.Status.textContent = 'Options saved.';
+  await TimerUtil.setTimeout(2000);
+  Elements.Status.textContent = '';
 }
 
-export function restore() {
-  return Promise.resolve()
-    .then(() => {
-      return Urls.load();
-    })
-    .then((urls) => {
-      Elements.InputUrls.value = Urls.stringify(urls);
-    });
+export async function restore() {
+  const urls = await Urls.load();
+  Elements.InputUrls.value = Urls.stringify(urls);
+}
+
+export async function maximizeDocumentElementHeight() {
+  document.documentElement.style.minHeight = '1000px';
+  await TimerUtil.pollUntil(10, () => window.innerHeight > 100);
+  await TimerUtil.setTimeout(200);
+  document.documentElement.style.minHeight = '100vh';
 }

@@ -1,5 +1,10 @@
 /**
- * Return the item in items with the largest getKeyByItem(item).
+ * Return the item in items with the largest `getKeyByItem(item)`.
+ *
+ * @template T
+ * @param {T[]} items
+ * @param {(item: T) => any} getKeyByItem
+ * @returns {T}
  */
 export function max(items, getKeyByItem) {
   return items.reduce((item1, item2) => {
@@ -20,8 +25,12 @@ export function zip(rows) {
 /**
  * Like zip, but with objects.
  *
- *     mapzip({num: [1, 2, 3], str: ["a", "b", "c"]})
- *     => [{num: 1, str: "a"}, {num: 2, str: "b"}, {num: 3, str: "c"}]
+ *      mapzip({num: [1, 2, 3], str: ["a", "b", "c"]})
+ *      => [{num: 1, str: "a"}, {num: 2, str: "b"}, {num: 3, str: "c"}]
+ *
+ * @template T
+ * @param {{ [x: string]: T[] }} unzipped
+ * @returns {{ [x: string]: T}[]}
  */
 export function mapzip(unzipped) {
   let zipped = [];
