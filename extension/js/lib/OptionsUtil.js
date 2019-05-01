@@ -1,26 +1,30 @@
 import * as TimerUtil from './TimerUtil.js';
 import * as Urls from './Urls.js';
+import { $ } from './QuerySelectorUtil.js';
+
+export const Elements = {
+  InputUrls: /** @type {HTMLTextAreaElement} */ ($('#js-input-urls')),
+  Status: /** @type {HTMLElement} */ ($('#js-status')),
+  Submit: /** @type {HTMLElement} */ ($('#js-submit')),
+};
 
 export function save() {
   Promise.resolve()
     .then(() => {
-      let el = /** @type {HTMLTextAreaElement} */ (document.getElementById(
-        'js-input-urls',
-      ));
-      let urlsAsText = el.value;
+      let urlsAsText = Elements.InputUrls.value;
       return Urls.saveText(urlsAsText);
     })
     .then(() => {
       return this.restore();
     })
     .then(() => {
-      document.getElementById('js-status').textContent = 'Options saved.';
+      Elements.Status.textContent = 'Options saved.';
     })
     .then(() => {
       return TimerUtil.setTimeout(2000);
     })
     .then(() => {
-      document.getElementById('js-status').textContent = '';
+      Elements.Status.textContent = '';
     });
 }
 
@@ -30,9 +34,6 @@ export function restore() {
       return Urls.load();
     })
     .then((urls) => {
-      let el = /** @type {HTMLTextAreaElement} */ (document.getElementById(
-        'js-input-urls',
-      ));
-      el.value = Urls.stringify(urls);
+      Elements.InputUrls.value = Urls.stringify(urls);
     });
 }

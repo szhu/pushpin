@@ -9,7 +9,7 @@ Promise.resolve(() => {
     return Options.restore();
   })
   .then(() => {
-    document.getElementById('js-submit').addEventListener('click', () => {
+    Options.Elements.Submit.addEventListener('click', () => {
       Options.save();
     });
   });
