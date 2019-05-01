@@ -7,7 +7,24 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-config-prettier": "4.2.0",
     "eslint-plugin-import": "^2.17.2",
+    "husky": "^2.1.0",
+    "lint-staged": "^8.1.5",
     "markdownlint": "0.13.0",
     "prettier": "1.17.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,css,json,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
   }
 }
