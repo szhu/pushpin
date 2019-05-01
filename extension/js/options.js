@@ -1,39 +1,10 @@
-import { DOMUtil, TimerUtil, Urls } from './base.js';
-
-let Options = {
-  save() {
-    Promise.resolve()
-      .then(() => {
-        let urlsAsText = document.getElementById('js-input-urls').value;
-        return Urls.saveText(urlsAsText);
-      })
-      .then(() => {
-        return this.restore();
-      })
-      .then(() => {
-        document.getElementById('js-status').textContent = 'Options saved.';
-      })
-      .then(() => {
-        return TimerUtil.setTimeout(2000);
-      })
-      .then(() => {
-        document.getElementById('js-status').textContent = '';
-      });
-  },
-
-  restore() {
-    return Promise.resolve()
-      .then(() => {
-        return Urls.load();
-      })
-      .then((urls) => {
-        document.getElementById('js-input-urls').value = Urls.stringify(urls);
-      });
-  },
-};
+// @ts-check
+import * as DomUtil from './lib/DomUtil.js';
+import * as Options from './lib/OptionsUtil.js';
+import * as TimerUtil from './lib/TimerUtil.js';
 
 Promise.resolve(() => {
-  return DOMUtil.ready();
+  return DomUtil.Ready;
 })
   .then(() => {
     return Options.restore();
@@ -45,7 +16,7 @@ Promise.resolve(() => {
   });
 
 Promise.resolve(() => {
-  return DOMUtil.ready();
+  return DomUtil.Ready;
 })
   .then(() => {
     document.documentElement.style.minHeight = '1000px';

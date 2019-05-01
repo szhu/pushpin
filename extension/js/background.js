@@ -1,10 +1,8 @@
-import {
-  ChromeApiUtil,
-  IterUtil,
-  PromiseUtil,
-  TimerUtil,
-  Urls,
-} from './base.js';
+import * as ChromeApiUtil from './lib/ChromeApiUtil.js';
+import * as IterUtil from './lib/IterUtil.js';
+import * as PromiseUtil from './lib/PromiseUtil.js';
+import * as TimerUtil from './lib/TimerUtil.js';
+import * as Urls from './lib/Urls.js';
 
 let Chrome = ChromeApiUtil.getPromiseVersions([
   'chrome.storage.sync.get',
