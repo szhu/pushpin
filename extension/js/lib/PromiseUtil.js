@@ -1,5 +1,3 @@
-// @ts-check
-
 // Like Promise.all, but with objects.
 export function map(promiseByKey) {
   let keys = Object.keys(promiseByKey);

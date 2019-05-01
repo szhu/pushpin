@@ -1,5 +1,3 @@
-// @ts-check
-
 // Return the item in items with the largest getKeyByItem(item).
 export function max(items, getKeyByItem) {
   return items.reduce((item1, item2) => {

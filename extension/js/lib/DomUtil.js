@@ -1,5 +1,3 @@
-// @ts-check
-
 // https://gist.github.com/josh/8177583
 export const Ready = new Promise((resolve) => {
   if (document.readyState === 'complete') {

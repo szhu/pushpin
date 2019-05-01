@@ -1,4 +1,3 @@
-// @ts-check
 import * as DomUtil from './lib/DomUtil.js';
 import * as Options from './lib/OptionsUtil.js';
 import * as TimerUtil from './lib/TimerUtil.js';

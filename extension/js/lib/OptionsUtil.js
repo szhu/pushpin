@@ -1,11 +1,13 @@
-// @ts-check
 import * as TimerUtil from './TimerUtil.js';
 import * as Urls from './Urls.js';
 
 export function save() {
   Promise.resolve()
     .then(() => {
-      let urlsAsText = document.getElementById('js-input-urls').value;
+      let el = /** @type {HTMLTextAreaElement} */ (document.getElementById(
+        'js-input-urls',
+      ));
+      let urlsAsText = el.value;
       return Urls.saveText(urlsAsText);
     })
     .then(() => {
@@ -28,6 +30,9 @@ export function restore() {
       return Urls.load();
     })
     .then((urls) => {
-      document.getElementById('js-input-urls').value = Urls.stringify(urls);
+      let el = /** @type {HTMLTextAreaElement} */ (document.getElementById(
+        'js-input-urls',
+      ));
+      el.value = Urls.stringify(urls);
     });
 }

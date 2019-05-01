@@ -1,4 +1,3 @@
-// @ts-check
 import * as ChromeApiUtil from './ChromeApiUtil.js';
 
 const Chrome = ChromeApiUtil.getPromiseVersions([

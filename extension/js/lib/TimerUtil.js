@@ -1,25 +1,34 @@
-// @ts-check
+class CancellablePromise extends Promise {
+  constructor(init, cancel) {
+    super(init);
+    this._cancel = cancel;
+  }
+
+  cancel() {
+    this._cancel();
+  }
+}
 
 // A promise-returning version of setTimeout.
 export function setTimeout(timeout) {
   let timerId;
   let rejectFunction;
-  let promise = new Promise((resolve, reject) => {
+  let init = (resolve, reject) => {
     timerId = window.setTimeout(resolve, timeout);
     rejectFunction = reject;
-  });
-  promise.cancel = () => {
+  };
+  let cancel = () => {
     clearTimeout(timerId);
     rejectFunction();
   };
-  return promise;
+  return new CancellablePromise(init, cancel);
 }
 
 // A promise-returning use case of setInterval.
 export function pollUntil(interval, stopCondition) {
   let intervalId;
   let rejectFunction;
-  let promise = new Promise((resolve, reject) => {
+  let init = (resolve, reject) => {
     intervalId = setInterval(() => {
       if (stopCondition()) {
         clearInterval(intervalId);
@@ -27,12 +36,12 @@ export function pollUntil(interval, stopCondition) {
       }
     }, interval);
     rejectFunction = reject;
-  });
-  promise.cancel = () => {
+  };
+  let cancel = () => {
     window.clearInterval(intervalId);
     rejectFunction();
   };
-  return promise;
+  return new CancellablePromise(init, cancel);
 }
 
 // Detect double-clicking-like actions.

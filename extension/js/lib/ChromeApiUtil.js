@@ -1,5 +1,3 @@
-// @ts-check
-
 // Make a promise-returning versions of the chrome API method.
 export function makePromiseVersion(theThis, theMethod, theMethodName) {
   return (...theArguments) => {
