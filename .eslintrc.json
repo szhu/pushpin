@@ -14,13 +14,18 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
+  "plugins": ["sort-imports-es6-autofix"],
   "rules": {
     "import/extensions": ["error", "always"],
+    "import/no-default-export": "error",
+    "import/prefer-default-export": "off",
     "no-plusplus": "off",
     "no-restricted-syntax": ["error", "LabeledStatement", "WithStatement"],
     "no-underscore-dangle": "off",
     "no-unused-vars": "off",
     "prefer-const": "off",
+    "prefer-promise-reject-errors": "off",
+    "sort-imports-es6-autofix/sort-imports-es6": "warn",
     "sort-imports": "warn"
   }
 }
