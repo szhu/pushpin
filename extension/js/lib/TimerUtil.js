@@ -11,6 +11,8 @@ class CancellablePromise extends Promise {
 
 /**
  * A promise-returning version of setTimeout.
+ *
+ * @param {number} timeout
  */
 export function setTimeout(timeout) {
   let timerId;

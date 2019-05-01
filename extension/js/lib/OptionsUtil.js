@@ -8,13 +8,26 @@ export const Elements = {
   Submit: /** @type {HTMLElement} */ ($('#js-submit')),
 };
 
-export async function save() {
-  let urlsAsText = Elements.InputUrls.value;
-  await Urls.saveText(urlsAsText);
-  this.restore();
-  Elements.Status.textContent = 'Options saved.';
-  await TimerUtil.setTimeout(2000);
+/**
+ * @param {string} status
+ * @param {number} ms
+ */
+async function flashStatus(status, ms) {
+  Elements.Status.textContent = status;
+  await TimerUtil.setTimeout(ms);
   Elements.Status.textContent = '';
+}
+
+export async function save() {
+  await Urls.saveText(Elements.InputUrls.value);
+
+  // Usually should be a no-op. But if something is wrong with saving or
+  // loading, this line should result in a similar failure and hint to the user
+  // that something is wrong.
+  Elements.InputUrls.value = '(Error saving or loading!)';
+  this.restore();
+
+  flashStatus('Options saved.', 2000);
 }
 
 export async function restore() {
@@ -22,6 +35,13 @@ export async function restore() {
   Elements.InputUrls.value = Urls.stringify(urls);
 }
 
+/**
+ * The browser continuously resizes the viewport of the options page depending
+ * on whether there is vertical content overflow. So, in order to get as much
+ * height as possible, we request a lot of height, wait for the viewport to be
+ * expanded, then set 100vh so that we keep it at the same height but remove any
+ * scrollbars.
+ */
 export async function maximizeDocumentElementHeight() {
   document.documentElement.style.minHeight = '1000px';
   await TimerUtil.pollUntil(10, () => window.innerHeight > 100);
