@@ -21,12 +21,12 @@ export function makePromiseVersion(theThis, theMethod, theMethodName) {
 }
 
 /**
- * Make a promise-returning versions of the chrome API method, given a string like
- * "chrome.windows.create".
+ * Make a promise-returning versions of the chrome API method, given a string
+ * like "chrome.windows.create".
  */
 export function assignPromiseVersionByMethodName(dstRoot, fullMethodName) {
   // Example: let fullMethodName = 'chrome.some.thing.tabs.create'
-  let methodParentParts = fullMethodName.split('.');
+  let methodParentParts = fullMethodName.split(".");
   // Now methodParentParts == ['chrome', 'some', 'thing', 'tabs', 'create']
 
   let [methodName] = methodParentParts.splice(-1);

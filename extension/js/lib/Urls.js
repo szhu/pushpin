@@ -1,8 +1,8 @@
-import * as ChromeApiUtil from './ChromeApiUtil.js';
+import * as ChromeApiUtil from "./ChromeApiUtil.js";
 
 const Chrome = ChromeApiUtil.getPromiseVersions([
-  'chrome.storage.sync.get',
-  'chrome.storage.sync.set',
+  "chrome.storage.sync.get",
+  "chrome.storage.sync.set",
 ]);
 
 /**
@@ -10,7 +10,7 @@ const Chrome = ChromeApiUtil.getPromiseVersions([
  * @returns {string}
  */
 export function stringify(urls) {
-  return urls.map((url) => `${url}\n`).join('');
+  return urls.map((url) => `${url}\n`).join("");
 }
 
 /**
@@ -19,7 +19,7 @@ export function stringify(urls) {
  */
 export function parse(urlsAsText) {
   // Filter out blank lines
-  return urlsAsText.split('\n').filter((line) => Boolean(line));
+  return urlsAsText.split("\n").filter((line) => Boolean(line));
 }
 
 /**
@@ -42,6 +42,6 @@ export async function saveText(urlsAsText) {
  * @returns {Promise<string[]>}
  */
 export async function load() {
-  let { urls } = await Chrome.storage.sync.get({ urls: '' });
+  let { urls } = await Chrome.storage.sync.get({ urls: "" });
   return this.parse(urls);
 }

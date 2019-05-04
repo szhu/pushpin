@@ -1,28 +1,28 @@
-import * as ChromeApiUtil from './lib/ChromeApiUtil.js';
-import * as IterUtil from './lib/IterUtil.js';
-import * as TimerUtil from './lib/TimerUtil.js';
-import * as Urls from './lib/Urls.js';
+import * as ChromeApiUtil from "./lib/ChromeApiUtil.js";
+import * as IterUtil from "./lib/IterUtil.js";
+import * as TimerUtil from "./lib/TimerUtil.js";
+import * as Urls from "./lib/Urls.js";
 
 let Chrome = ChromeApiUtil.getPromiseVersions([
-  'chrome.storage.sync.get',
-  'chrome.storage.sync.set',
-  'chrome.tabs.create',
-  'chrome.tabs.discard',
-  'chrome.tabs.duplicate',
-  'chrome.tabs.get',
-  'chrome.tabs.getAllInWindow',
-  'chrome.tabs.getCurrent',
-  'chrome.tabs.move',
-  'chrome.tabs.query',
-  'chrome.tabs.reload',
-  'chrome.tabs.remove',
-  'chrome.tabs.update',
-  'chrome.windows.create',
-  'chrome.windows.getAll',
-  'chrome.windows.getCurrent',
-  'chrome.windows.getLastFocused',
-  'chrome.windows.remove',
-  'chrome.windows.update',
+  "chrome.storage.sync.get",
+  "chrome.storage.sync.set",
+  "chrome.tabs.create",
+  "chrome.tabs.discard",
+  "chrome.tabs.duplicate",
+  "chrome.tabs.get",
+  "chrome.tabs.getAllInWindow",
+  "chrome.tabs.getCurrent",
+  "chrome.tabs.move",
+  "chrome.tabs.query",
+  "chrome.tabs.reload",
+  "chrome.tabs.remove",
+  "chrome.tabs.update",
+  "chrome.windows.create",
+  "chrome.windows.getAll",
+  "chrome.windows.getCurrent",
+  "chrome.windows.getLastFocused",
+  "chrome.windows.remove",
+  "chrome.windows.update",
 ]);
 
 /**
@@ -31,7 +31,7 @@ let Chrome = ChromeApiUtil.getPromiseVersions([
  * @returns {Promise<chrome.windows.Window & {tabs: chrome.tabs.Tab[], pinnedTabs: chrome.tabs.Tab[]}>}
  */
 async function getWindowWithPinnedTabs() {
-  const windows = await Chrome.windows.getAll({ windowTypes: ['normal'] });
+  const windows = await Chrome.windows.getAll({ windowTypes: ["normal"] });
   const windowsWithPinnedTabs = await Promise.all(
     windows.map(async (window) => {
       let windowId = window.id;
@@ -88,7 +88,7 @@ async function movePinnedTabsToWindow(tabs, window) {
 async function redoPinnedTabs(pinnedTabUrlsPromise, refresh) {
   let frontmostWindow = await Chrome.windows.getLastFocused({
     populate: true,
-    windowTypes: ['normal'],
+    windowTypes: ["normal"],
   });
   let window = await getWindowWithPinnedTabs();
   let pinnedTabUrls = await pinnedTabUrlsPromise;
@@ -114,7 +114,7 @@ async function redoPinnedTabs(pinnedTabUrlsPromise, refresh) {
     let isNewTabPageInWindow = {
       windowId: window.id,
       pinned: false,
-      url: 'chrome://newtab/',
+      url: "chrome://newtab/",
     };
     let tabs = await Chrome.tabs.query(isNewTabPageInWindow);
     await Chrome.tabs.remove(tabs.map((tab) => tab.id));

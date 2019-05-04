@@ -1,11 +1,11 @@
-import * as TimerUtil from './TimerUtil.js';
-import * as Urls from './Urls.js';
-import { $ } from './QuerySelectorUtil.js';
+import * as TimerUtil from "./TimerUtil.js";
+import * as Urls from "./Urls.js";
+import { $ } from "./QuerySelectorUtil.js";
 
 export const Elements = {
-  InputUrls: /** @type {HTMLTextAreaElement} */ ($('#js-input-urls')),
-  Status: /** @type {HTMLElement} */ ($('#js-status')),
-  Submit: /** @type {HTMLElement} */ ($('#js-submit')),
+  InputUrls: /** @type {HTMLTextAreaElement} */ ($("#js-input-urls")),
+  Status: /** @type {HTMLElement} */ ($("#js-status")),
+  Submit: /** @type {HTMLElement} */ ($("#js-submit")),
 };
 
 /**
@@ -15,7 +15,7 @@ export const Elements = {
 async function flashStatus(status, ms) {
   Elements.Status.textContent = status;
   await TimerUtil.setTimeout(ms);
-  Elements.Status.textContent = '';
+  Elements.Status.textContent = "";
 }
 
 export async function save() {
@@ -24,10 +24,10 @@ export async function save() {
   // Usually should be a no-op. But if something is wrong with saving or
   // loading, this line should result in a similar failure and hint to the user
   // that something is wrong.
-  Elements.InputUrls.value = '(Error saving or loading!)';
+  Elements.InputUrls.value = "(Error saving or loading!)";
   this.restore();
 
-  flashStatus('Options saved.', 2000);
+  flashStatus("Options saved.", 2000);
 }
 
 export async function restore() {
@@ -43,8 +43,8 @@ export async function restore() {
  * scrollbars.
  */
 export async function maximizeDocumentElementHeight() {
-  document.documentElement.style.minHeight = '1000px';
+  document.documentElement.style.minHeight = "1000px";
   await TimerUtil.pollUntil(10, () => window.innerHeight > 100);
   await TimerUtil.setTimeout(200);
-  document.documentElement.style.minHeight = '100vh';
+  document.documentElement.style.minHeight = "100vh";
 }

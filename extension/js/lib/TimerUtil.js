@@ -56,7 +56,7 @@ export function pollUntil(interval, stopCondition) {
 export class DoubleAction {
   constructor({ timeout, onSingle, onDouble }) {
     if (!(this instanceof DoubleAction)) {
-      throw new Error('TimerUtil.DoubleAction must be initialized using new');
+      throw new Error("TimerUtil.DoubleAction must be initialized using new");
     }
     this.timeout = timeout;
     this.onSingle = onSingle;
