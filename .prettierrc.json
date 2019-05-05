@@ -6,6 +6,7 @@
   "singleQuote": false,
   "trailingComma": "all",
   "arrowParens": "always",
+  "proseWrap": "always",
 
   "overrides": [
     {
