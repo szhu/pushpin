@@ -27,7 +27,7 @@ export function parse(urlsAsText) {
  * @returns {string}
  */
 export function normalize(urlsAsText) {
-  return this.stringify(this.parse(urlsAsText));
+  return stringify(parse(urlsAsText));
 }
 
 /**
@@ -35,7 +35,7 @@ export function normalize(urlsAsText) {
  * @returns {Promise<void>}
  */
 export async function saveText(urlsAsText) {
-  await Chrome.storage.sync.set({ urls: this.normalize(urlsAsText) });
+  await Chrome.storage.sync.set({ urls: normalize(urlsAsText) });
 }
 
 /**
@@ -43,5 +43,5 @@ export async function saveText(urlsAsText) {
  */
 export async function load() {
   let { urls } = await Chrome.storage.sync.get({ urls: "" });
-  return this.parse(urls);
+  return parse(urls);
 }

@@ -18,6 +18,11 @@ async function flashStatus(status, ms) {
   Elements.Status.textContent = "";
 }
 
+export async function restore() {
+  const urls = await Urls.load();
+  Elements.InputUrls.value = Urls.stringify(urls);
+}
+
 export async function save() {
   await Urls.saveText(Elements.InputUrls.value);
 
@@ -25,14 +30,9 @@ export async function save() {
   // loading, this line should result in a similar failure and hint to the user
   // that something is wrong.
   Elements.InputUrls.value = "(Error saving or loading!)";
-  this.restore();
+  restore();
 
   flashStatus("Options saved.", 2000);
-}
-
-export async function restore() {
-  const urls = await Urls.load();
-  Elements.InputUrls.value = Urls.stringify(urls);
 }
 
 /**

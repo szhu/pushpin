@@ -14,6 +14,10 @@ export function max(items, getKeyByItem) {
 
 /**
  * Zip that works with iterables.
+ *
+ * @template T
+ * @param {T[][]} rows
+ * @returns {T[][]}
  */
 export function zip(rows) {
   // From http://stackoverflow.com/a/10284006/782045
@@ -33,6 +37,7 @@ export function zip(rows) {
  * @returns {{ [x: string]: T}[]}
  */
 export function mapzip(unzipped) {
+  /** @type {{ [x: string]: T}[]} */
   let zipped = [];
   for (let key of Object.keys(unzipped)) {
     let vals = unzipped[key];

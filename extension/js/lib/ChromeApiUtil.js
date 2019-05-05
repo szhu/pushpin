@@ -46,17 +46,21 @@ export function assignPromiseVersionByMethodName(dstRoot, fullMethodName) {
     dstParent = dstParent[methodParentPart];
   }
   // Now dstParent == dstRoot.some.thing.tabs
-  dstParent[methodName] = this.makePromiseVersion(
+  dstParent[methodName] = makePromiseVersion(
     srcParent,
     srcParent[methodName],
     fullMethodName,
   );
 }
 
+/**
+ * @param {string[]} fullMethodNames
+ * @returns {any}
+ */
 export function getPromiseVersions(fullMethodNames) {
   let dstRoot = {};
   for (let fullMethodName of fullMethodNames) {
-    this.assignPromiseVersionByMethodName(dstRoot, fullMethodName);
+    assignPromiseVersionByMethodName(dstRoot, fullMethodName);
   }
   return dstRoot;
 }
