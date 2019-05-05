@@ -1,28 +1,34 @@
+// TODO: Replace this file with https://github.com/mozilla/webextension-polyfill
+
 /**
  * Make a promise-returning versions of the chrome API method.
+ *
+ * @param {any} thisObj
+ * @param {Function} method
+ * @param {string} methodName
  */
-export function makePromiseVersion(theThis, theMethod, theMethodName) {
-  return (...theArguments) => {
-    return new Promise((resolve, reject) => {
-      theMethod.apply(
-        theThis,
-        theArguments.concat((result) => {
-          return chrome.runtime.lastError == null
-            ? resolve(result)
-            : reject({
-                function: theMethodName,
-                arguments: theArguments,
-                error: chrome.runtime.lastError,
-              });
-        }),
-      );
+export function makePromiseVersion(thisObj, method, methodName) {
+  return async (/** @type {any[]} */ ...args) => {
+    let result = await new Promise((resolve) => {
+      method.apply(thisObj, [...args, resolve]);
     });
+    if (chrome.runtime.lastError == null) return result;
+
+    let errorContext = {
+      function: methodName,
+      arguments: args,
+      error: chrome.runtime.lastError,
+    };
+    throw errorContext;
   };
 }
 
 /**
  * Make a promise-returning versions of the chrome API method, given a string
  * like "chrome.windows.create".
+ *
+ * @param {Object} dstRoot
+ * @param {string} fullMethodName
  */
 export function assignPromiseVersionByMethodName(dstRoot, fullMethodName) {
   // Example: let fullMethodName = 'chrome.some.thing.tabs.create'
@@ -33,7 +39,7 @@ export function assignPromiseVersionByMethodName(dstRoot, fullMethodName) {
   // Now methodParentParts == ['chrome', 'some', 'thing', 'tabs']
   // Now methodName == 'create'
 
-  let srcParent = window;
+  let srcParent = /** @type {Object} */ (window);
   for (let methodParentPart of methodParentParts) {
     srcParent = srcParent[methodParentPart];
   }
@@ -55,12 +61,12 @@ export function assignPromiseVersionByMethodName(dstRoot, fullMethodName) {
 
 /**
  * @param {string[]} fullMethodNames
- * @returns {any}
+ * @returns {typeof browser}
  */
 export function getPromiseVersions(fullMethodNames) {
   let dstRoot = {};
   for (let fullMethodName of fullMethodNames) {
     assignPromiseVersionByMethodName(dstRoot, fullMethodName);
   }
-  return dstRoot;
+  return /** @type {typeof browser} */ (dstRoot);
 }

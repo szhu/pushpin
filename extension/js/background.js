@@ -28,7 +28,7 @@ let Chrome = ChromeApiUtil.getPromiseVersions([
 /**
  * Get the window with the most pinned tabs.
  *
- * @returns {Promise<chrome.windows.Window & {tabs: chrome.tabs.Tab[], pinnedTabs: chrome.tabs.Tab[]}>}
+ * @returns {Promise<browser.windows.Window & {pinnedTabs: browser.tabs.Tab[]}>}
  */
 async function getWindowWithPinnedTabs() {
   const windows = await Chrome.windows.getAll({ windowTypes: ["normal"] });
@@ -46,6 +46,10 @@ async function getWindowWithPinnedTabs() {
   return windowWithMostPinnedTabs;
 }
 
+/**
+ * @param {string[]} pinnedTabUrls
+ * @param {browser.windows.Window} window
+ */
 function openPinnedTabUrlsInWindow(pinnedTabUrls, window) {
   return Promise.all(
     pinnedTabUrls.map((pinnedTabUrl) =>
@@ -59,24 +63,39 @@ function openPinnedTabUrlsInWindow(pinnedTabUrls, window) {
   );
 }
 
-function updateTabsWithUrls(tabs, urls) {
+/**
+ * @param {browser.tabs.Tab[]} tabs
+ * @param {string[]} urls
+ */
+async function updateTabsWithUrls(tabs, urls) {
   return Promise.all(
-    IterUtil.mapzip({ tab: tabs, url: urls }).map(({ tab, url }) => {
-      return Chrome.tabs.update(tab.id, { url });
+    IterUtil.mapzip({ tab: tabs, url: urls }).map(async ({ tab, url }) => {
+      if (tab.id) await Chrome.tabs.update(tab.id, { url });
     }),
   );
 }
 
+/**
+ * @param {browser.tabs.Tab[]} tabs
+ * @param {browser.windows.Window} window
+ */
 async function movePinnedTabsToWindow(tabs, window) {
   let endOfWindow = { windowId: window.id, index: -1 };
-  Chrome.tabs.move(tabs.map((tab) => tab.id), endOfWindow);
-  const newTabs = Chrome.tabs.getAllInWindow(window.id);
+  Chrome.tabs.move(IterUtil.compact(tabs.map((tab) => tab.id)), endOfWindow);
+  const newTabs = await Chrome.tabs.getAllInWindow(window.id);
   const tabsToPin = newTabs.slice(newTabs.length - tabs.length);
   await Promise.all(
-    tabsToPin.map((tabToPin) =>
-      Chrome.tabs.update(tabToPin.id, { pinned: true }),
+    IterUtil.compact(tabsToPin.map((tab) => tab.id)).map((tabId) =>
+      Chrome.tabs.update(tabId, { pinned: true }),
     ),
   );
+}
+
+/**
+ * @param {browser.tabs.Tab[]} tabs
+ */
+async function removeTabs(tabs) {
+  await Chrome.tabs.remove(IterUtil.compact(tabs.map((tab) => tab.id)));
 }
 
 /**
@@ -94,9 +113,10 @@ async function redoPinnedTabs(pinnedTabUrlsPromise, refresh) {
   let pinnedTabUrls = await pinnedTabUrlsPromise;
 
   if (window.pinnedTabs.length !== pinnedTabUrls.length) {
+    let x = window.pinnedTabs.map((tab) => tab.id).filter(Boolean);
     // If the wrong number of tabs are open, close and reopen all of them.
     await Promise.all([
-      Chrome.tabs.remove(window.pinnedTabs.map((tab) => tab.id)),
+      removeTabs(window.pinnedTabs),
       openPinnedTabUrlsInWindow(pinnedTabUrls, frontmostWindow),
     ]);
     return;
@@ -117,7 +137,7 @@ async function redoPinnedTabs(pinnedTabUrlsPromise, refresh) {
       url: "chrome://newtab/",
     };
     let tabs = await Chrome.tabs.query(isNewTabPageInWindow);
-    await Chrome.tabs.remove(tabs.map((tab) => tab.id));
+    await removeTabs(tabs);
   }
 
   if (refresh) {

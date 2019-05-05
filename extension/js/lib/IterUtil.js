@@ -32,12 +32,12 @@ export function zip(rows) {
  *      mapzip({num: [1, 2, 3], str: ["a", "b", "c"]})
  *      => [{num: 1, str: "a"}, {num: 2, str: "b"}, {num: 3, str: "c"}]
  *
- * @template T
- * @param {{ [x: string]: T[] }} unzipped
- * @returns {{ [x: string]: T}[]}
+ * @template {{[key: string]: any}} T
+ * @param {{ [key in keyof T]: T[key][] }} unzipped
+ * @returns {T[]}
  */
 export function mapzip(unzipped) {
-  /** @type {{ [x: string]: T}[]} */
+  /** @type {T[]} */
   let zipped = [];
   for (let key of Object.keys(unzipped)) {
     let vals = unzipped[key];
@@ -47,4 +47,25 @@ export function mapzip(unzipped) {
     }
   }
   return zipped;
+}
+
+/**
+ * @template T
+ * @param {T | null | undefined} value
+ * @returns {value is T}
+ */
+function notNullOrUndefined(value) {
+  return value != null;
+}
+
+/**
+ * Removes null and undefined from the array. Note: Doesn't remove 0, false, or
+ * any other falsy values.
+ *
+ * @template T
+ * @param {(T | null | undefined)[]} items
+ * @returns {T[]}
+ */
+export function compact(items) {
+  return items.filter(notNullOrUndefined);
 }

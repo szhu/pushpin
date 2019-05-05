@@ -21,6 +21,7 @@
     "import/prefer-default-export": "off",
     "no-plusplus": "off",
     "no-restricted-syntax": ["error", "LabeledStatement", "WithStatement"],
+    "no-throw-literal": "off",
     "no-underscore-dangle": "off",
     "no-unused-vars": "off",
     "prefer-const": "off",
