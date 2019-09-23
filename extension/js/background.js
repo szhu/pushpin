@@ -196,11 +196,27 @@ async function reloadPinnedTabUrlsIntoCurrentPinnedTabs() {
   await updateTabsWithUrls(pinnedTabs, pinnedTabUrls);
 }
 
+/**
+ * Reload the configured pinned tab URLs into the existing pinned tabs.
+ */
+async function reloadPinnedTabUrlsIntoCurrentTab() {
+  let [, pinnedTabs] = await PinnedTabWindowAndTabs.get();
+  let pinnedTabUrls = await PinnedTabUrls.get();
+  let i = await CurrentPinnedTabIndex.get();
+
+  if (i === undefined) return;
+
+  await updateTabsWithUrls([pinnedTabs[i]], [pinnedTabUrls[i]]);
+}
+
 let clickBrowserAction = new TimerUtil.DoubleAction({
   timeout: 300,
   onSingle: async () => {
     resetAllCaches();
-    await bringPinnedTabsForward();
+    let action = await bringPinnedTabsForward();
+    if (action === "no-action") {
+      reloadPinnedTabUrlsIntoCurrentTab();
+    }
   },
   onDouble: async () => {
     resetAllCaches();
