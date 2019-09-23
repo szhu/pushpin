@@ -23,5 +23,69 @@
   "icons": {
     "24": "img/icon24.png",
     "48": "img/icon48.png"
+  },
+  "commands": {
+    "activate-normal-tab-0": {
+      "description": "Activate unpinned tab 1"
+    },
+    "activate-normal-tab-1": {
+      "description": "Activate unpinned tab 2"
+    },
+    "activate-normal-tab-2": {
+      "description": "Activate unpinned tab 3"
+    },
+    "activate-normal-tab-3": {
+      "description": "Activate unpinned tab 4"
+    },
+    "activate-normal-tab-4": {
+      "description": "Activate unpinned tab 5"
+    },
+    "activate-normal-tab-5": {
+      "description": "Activate unpinned tab 6"
+    },
+    "activate-normal-tab-6": {
+      "description": "Activate unpinned tab 7"
+    },
+    "activate-normal-tab-7": {
+      "description": "Activate unpinned tab 8"
+    },
+    "activate-normal-tab-last": {
+      "description": "Activate last unpinned tab"
+    },
+    "activate-pinned-tab-0": {
+      "description": "Activate pinned tab 1"
+    },
+    "activate-pinned-tab-1": {
+      "description": "Activate pinned tab 2"
+    },
+    "activate-pinned-tab-2": {
+      "description": "Activate pinned tab 3"
+    },
+    "activate-pinned-tab-3": {
+      "description": "Activate pinned tab 4"
+    },
+    "activate-pinned-tab-4": {
+      "description": "Activate pinned tab 5"
+    },
+    "activate-pinned-tab-5": {
+      "description": "Activate pinned tab 6"
+    },
+    "activate-pinned-tab-6": {
+      "description": "Activate pinned tab 7"
+    },
+    "activate-pinned-tab-7": {
+      "description": "Activate pinned tab 8"
+    },
+    "activate-pinned-tab-8": {
+      "description": "Activate pinned tab 9"
+    },
+    "activate-pinned-tab-9": {
+      "description": "Activate pinned tab 10"
+    },
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+P"
+      }
+    }
   }
 }

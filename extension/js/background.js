@@ -14,6 +14,7 @@ let Chrome = ChromeApiUtil.getPromiseVersions([
   "chrome.tabs.getAllInWindow",
   "chrome.tabs.getCurrent",
   "chrome.tabs.getSelected",
+  "chrome.tabs.highlight",
   "chrome.tabs.move",
   "chrome.tabs.query",
   "chrome.tabs.reload",
@@ -65,7 +66,6 @@ const PinnedTabUrls = new LazyStateCache(async () => Urls.load());
  */
 const FrontmostWindow = new LazyStateCache(async () =>
   Chrome.windows.getLastFocused({
-    populate: true,
     windowTypes: ["normal"],
   }),
 );
@@ -84,12 +84,24 @@ const CurrentPinnedTabIndex = new LazyStateCache(async () => {
   return index === -1 ? undefined : index;
 });
 
+/**
+ * chrome.windows.WINDOW_ID_CURRENT
+ * windowType
+ */
+const TabsInFrontmostWindow = new LazyStateCache(async () =>
+  Chrome.tabs.query({
+    lastFocusedWindow: true,
+    windowType: "normal",
+  }),
+);
+
 function resetAllCaches() {
   AllNormalWindows.forget();
   PinnedTabWindowAndTabs.forget();
   PinnedTabUrls.forget();
   FrontmostWindow.forget();
   CurrentPinnedTabIndex.forget();
+  TabsInFrontmostWindow.forget();
 }
 
 /**
@@ -209,6 +221,47 @@ async function reloadPinnedTabUrlsIntoCurrentTab() {
   await updateTabsWithUrls([pinnedTabs[i]], [pinnedTabUrls[i]]);
 }
 
+/**
+ * Highlight the n-th normal tab in the window. This should do the same thing as
+ * the native Ctrl-1 through Ctrl-9 actions, expect that we ignore pinned tabs.
+ *
+ * @param {number} index
+ * - Tabs are 0-indexed.
+ * - Negative index counts from the right. (-1 = last tab.)
+ */
+async function focusNormalTabAtIndex(index) {
+  let tabs = await TabsInFrontmostWindow.get();
+
+  let countPinned = tabs.filter((tab) => tab.pinned).length;
+
+  let actualIndex = index < 0 ? tabs.length + index : countPinned + index;
+  let tab = tabs[actualIndex];
+
+  if (!tab) return;
+  if (!tab.windowId) return;
+
+  await Chrome.tabs.highlight({ windowId: tab.windowId, tabs: actualIndex });
+  await Chrome.windows.update(tab.windowId, { focused: true });
+}
+
+/**
+ * Highlight the n-th pinned tab.
+ *
+ * @param {number} index
+ * - Tabs are 0-indexed.
+ */
+async function focusedPinnedTabAtIndex(index) {
+  let [, pinnedTabs] = await PinnedTabWindowAndTabs.get();
+
+  let tab = pinnedTabs[index];
+  if (!tab) return;
+  if (!tab.windowId) return;
+  if (!tab.pinned) return;
+
+  await Chrome.tabs.highlight({ windowId: tab.windowId, tabs: index });
+  await Chrome.windows.update(tab.windowId, { focused: true });
+}
+
 let clickBrowserAction = new TimerUtil.DoubleAction({
   timeout: 300,
   onSingle: async () => {
@@ -230,4 +283,57 @@ let clickBrowserAction = new TimerUtil.DoubleAction({
 // Called when the user clicks on the browser action.
 chrome.browserAction.onClicked.addListener((_tab) => {
   clickBrowserAction.trigger();
+});
+
+chrome.commands.onCommand.addListener(function commandHandler(
+  /** @type {string} */ command,
+) {
+  resetAllCaches();
+
+  switch (command) {
+    // Active normal tabs.
+    case "activate-normal-tab-0":
+      return focusNormalTabAtIndex(0);
+    case "activate-normal-tab-1":
+      return focusNormalTabAtIndex(1);
+    case "activate-normal-tab-2":
+      return focusNormalTabAtIndex(2);
+    case "activate-normal-tab-3":
+      return focusNormalTabAtIndex(3);
+    case "activate-normal-tab-4":
+      return focusNormalTabAtIndex(4);
+    case "activate-normal-tab-5":
+      return focusNormalTabAtIndex(5);
+    case "activate-normal-tab-6":
+      return focusNormalTabAtIndex(6);
+    case "activate-normal-tab-7":
+      return focusNormalTabAtIndex(7);
+    case "activate-normal-tab-8":
+      return focusNormalTabAtIndex(8);
+    case "activate-normal-tab-last":
+      return focusNormalTabAtIndex(-1);
+
+    // Active pinned tabs.
+    case "activate-pinned-tab-0":
+      return focusedPinnedTabAtIndex(0);
+    case "activate-pinned-tab-1":
+      return focusedPinnedTabAtIndex(1);
+    case "activate-pinned-tab-2":
+      return focusedPinnedTabAtIndex(2);
+    case "activate-pinned-tab-3":
+      return focusedPinnedTabAtIndex(3);
+    case "activate-pinned-tab-4":
+      return focusedPinnedTabAtIndex(4);
+    case "activate-pinned-tab-5":
+      return focusedPinnedTabAtIndex(5);
+    case "activate-pinned-tab-6":
+      return focusedPinnedTabAtIndex(6);
+    case "activate-pinned-tab-7":
+      return focusedPinnedTabAtIndex(7);
+    case "activate-pinned-tab-8":
+      return focusedPinnedTabAtIndex(8);
+    case "activate-pinned-tab-9":
+      return focusedPinnedTabAtIndex(9);
+    default:
+  }
 });
