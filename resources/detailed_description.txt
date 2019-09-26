@@ -1,15 +1,21 @@
-Pinned tabs in Chrome are nice, but if you expect to always have the same set of pinned tabs open, you may be frustrated by how unpersistent they are. Pushpin is here to help.
+Full usage guide here: https://github.com/szhu/pushpin
 
+Pinned tabs in Chrome are nice, but if you expect to always have the same set of pinned tabs open, you may be frustrated by how unpersistent they are.
 
-Pushpin lets you configure your favorite set of pinned tabs. Just go to the extension's options page and add a list of URLs.
+Pushpin is here to help!
 
-To open your pinned tabs in the current window, click the Pushpin icon. If the pinned tabs are already open in another window, Pushpin will move them to the current window. This is done without reloading the tab, so it's perfect for using a pinned tab to play music.
+Pushpin lets you:
+📌 Configure your favorite set of pinned tabs
+📌 Reset all or each pinned tab back to your configuration
+📌 Move your pinned tabs to the front window without reloading them
+📌 Set keyboard shortcuts for each pinned tab (shortcuts can be global)
+📌 Modify your keyboard shortcuts so that Ctrl-n will open the n-th unpinned tab
 
-Webapps are buggy sometimes, and you might need to reset them. Double-click Pushpin to reload all your pinned tabs, even if they're already open.
+Full usage guide here: https://github.com/szhu/pushpin
 
 
 Bugs? Questions? Ideas?
 
 The Chrome Web Store's reviews page is quite limited, and I don't get notifications when people write reviews. Feel free to leave a rating, but if you'd like to report a bug or make a feature request, please do so on GitHub instead so I can ask for more info: https://github.com/szhu/pushpin/issues
 
-Source code on GitHub: https://github.com/szhu/pushpin
+This extension is open source: https://github.com/szhu/pushpin
