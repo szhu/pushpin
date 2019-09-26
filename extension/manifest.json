@@ -82,10 +82,6 @@
     "activate-pinned-tab-9": {
       "description": "Activate pinned tab 10"
     },
-    "_execute_browser_action": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+P"
-      }
-    }
+    "_execute_browser_action": {}
   }
 }
