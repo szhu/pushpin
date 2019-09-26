@@ -22,8 +22,9 @@
       }
       textarea {
         display: block;
-        width: 100%;
         resize: none;
+        white-space: nowrap;
+        width: 100%;
       }
       .stretch {
         flex-grow: 1;
@@ -34,7 +35,7 @@
   <body class="stretch">
     <group class="stretch">
       <label for="js-input-urls">
-        Pinned tab URLs:
+        Pinned tab URLs, one per line:
       </label>
       <textarea class="stretch" id="js-input-urls"></textarea>
     </group>
