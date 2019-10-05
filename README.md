@@ -43,7 +43,10 @@ keyboard shortcuts for your tabs.
 
 You can set up a keyboard shortcut for each of your pinned tabs, so that you can
 quickly jump to the webapp you want. You can even make these shortcuts global so
-that they work from any app!
+that they work from any app! If you press the keyboard shortcut for a tab and
+you are already on that tab, the tab will reload to the configured URL for that
+pinned tab. (This is useful for when you've strayed far away from the original
+pinned tab URL and you want to go back.)
 
 By default on Chrome, Ctrl-1 - Ctrl-9 (Cmd-1 - Cmd-9 on Mac) will jump you to
 the _n_-th tab, but this can be not ideal if you'd like these shortcuts to

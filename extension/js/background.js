@@ -21,6 +21,7 @@ let Chrome = ChromeApiUtil.getPromiseVersions([
   "chrome.tabs.remove",
   "chrome.tabs.update",
   "chrome.windows.create",
+  "chrome.windows.get",
   "chrome.windows.getAll",
   "chrome.windows.getCurrent",
   "chrome.windows.getLastFocused",
@@ -71,10 +72,13 @@ const FrontmostWindow = new LazyStateCache(async () =>
 );
 
 /**
- * Get the frontmost window.
+ * Get the index of the frontmost tab.
  */
 const CurrentPinnedTabIndex = new LazyStateCache(async () => {
   let [, pinnedTabs] = await PinnedTabWindowAndTabs.get();
+
+  // TODO: getSelected is deprecated. Also, it might be used wrong here, since
+  // no window ID was passed.
   let selectedTab = await Chrome.tabs.getSelected();
 
   let index = pinnedTabs.findIndex(
@@ -245,21 +249,28 @@ async function focusNormalTabAtIndex(index) {
 }
 
 /**
- * Highlight the n-th pinned tab.
+ * Highlight the n-th pinned tab. If it already highlighted, reload it.
  *
  * @param {number} index
  * - Tabs are 0-indexed.
  */
-async function focusedPinnedTabAtIndex(index) {
+async function focusedOrReloadPinnedTabAtIndex(index) {
   let [, pinnedTabs] = await PinnedTabWindowAndTabs.get();
-
   let tab = pinnedTabs[index];
-  if (!tab) return;
-  if (!tab.windowId) return;
-  if (!tab.pinned) return;
+  if (!tab || !tab.windowId || !tab.pinned) return;
 
-  await Chrome.tabs.highlight({ windowId: tab.windowId, tabs: index });
-  await Chrome.windows.update(tab.windowId, { focused: true });
+  let window = await Chrome.windows.get(tab.windowId);
+  if (!window) return;
+
+  // TODO: CurrentPinnedTabIndex should already account for whether Chrome is
+  // frontmost. If it is not, it should return `undefined`.
+  let currentPinnedTabIndex = await CurrentPinnedTabIndex.get();
+  if (window.focused && currentPinnedTabIndex === index) {
+    await reloadPinnedTabUrlsIntoCurrentTab();
+  } else {
+    await Chrome.tabs.highlight({ windowId: tab.windowId, tabs: index });
+    await Chrome.windows.update(tab.windowId, { focused: true });
+  }
 }
 
 let clickBrowserAction = new TimerUtil.DoubleAction({
@@ -315,25 +326,25 @@ chrome.commands.onCommand.addListener(function commandHandler(
 
     // Active pinned tabs.
     case "activate-pinned-tab-0":
-      return focusedPinnedTabAtIndex(0);
+      return focusedOrReloadPinnedTabAtIndex(0);
     case "activate-pinned-tab-1":
-      return focusedPinnedTabAtIndex(1);
+      return focusedOrReloadPinnedTabAtIndex(1);
     case "activate-pinned-tab-2":
-      return focusedPinnedTabAtIndex(2);
+      return focusedOrReloadPinnedTabAtIndex(2);
     case "activate-pinned-tab-3":
-      return focusedPinnedTabAtIndex(3);
+      return focusedOrReloadPinnedTabAtIndex(3);
     case "activate-pinned-tab-4":
-      return focusedPinnedTabAtIndex(4);
+      return focusedOrReloadPinnedTabAtIndex(4);
     case "activate-pinned-tab-5":
-      return focusedPinnedTabAtIndex(5);
+      return focusedOrReloadPinnedTabAtIndex(5);
     case "activate-pinned-tab-6":
-      return focusedPinnedTabAtIndex(6);
+      return focusedOrReloadPinnedTabAtIndex(6);
     case "activate-pinned-tab-7":
-      return focusedPinnedTabAtIndex(7);
+      return focusedOrReloadPinnedTabAtIndex(7);
     case "activate-pinned-tab-8":
-      return focusedPinnedTabAtIndex(8);
+      return focusedOrReloadPinnedTabAtIndex(8);
     case "activate-pinned-tab-9":
-      return focusedPinnedTabAtIndex(9);
+      return focusedOrReloadPinnedTabAtIndex(9);
     default:
   }
 });
