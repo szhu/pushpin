@@ -62,7 +62,7 @@ Possible future features:
   re-opening pinned tabs if they are closed.
 - Accept multiple pinned tab configurations that can be cycled through.
 - Accept advanced pinned tab configurations (for example, keeping a tab always
-  muted, or having a tab be deacivated by default).
+  muted, or having a tab be deactivated by default).
 - Quickly close or deactivate all pinned tabs.
 - Smarter restoration of tabs after some but not all of them have been closed.
 
