@@ -4,7 +4,7 @@ import { LazyStateCache } from "./lib/LazyStateCache.js";
 import * as TimerUtil from "./lib/TimerUtil.js";
 import * as Urls from "./lib/Urls.js";
 
-let Chrome = ChromeApiUtil.getPromiseVersions([
+const Chrome = ChromeApiUtil.getPromiseVersions([
   "chrome.storage.sync.get",
   "chrome.storage.sync.set",
   "chrome.tabs.create",
@@ -42,13 +42,13 @@ const PinnedTabWindowAndTabs = new LazyStateCache(async () => {
       Chrome.tabs.query({ windowId: window.id, pinned: true }),
     ),
   );
-  let { window, pinnedTabs } = IterUtil.max(
+  const { window, pinnedTabs } = IterUtil.max(
     IterUtil.mapzip({ window: windows, pinnedTabs: pinnedTabsLists }),
     (pair) => pair.pinnedTabs.length,
   );
 
   /** @type {[browser.windows.Window, browser.tabs.Tab[]]} */
-  let returnValue = [window, pinnedTabs];
+  const returnValue = [window, pinnedTabs];
 
   return returnValue;
 });
@@ -65,13 +65,13 @@ const FrontmostWindow = new LazyStateCache(async () =>
 
 /** Get the index of the frontmost tab. */
 const CurrentPinnedTabIndex = new LazyStateCache(async () => {
-  let [, pinnedTabs] = await PinnedTabWindowAndTabs.get();
+  const [, pinnedTabs] = await PinnedTabWindowAndTabs.get();
 
   // TODO: getSelected is deprecated. Also, it might be used wrong here, since
   // no window ID was passed.
-  let selectedTab = await Chrome.tabs.getSelected();
+  const selectedTab = await Chrome.tabs.getSelected();
 
-  let index = pinnedTabs.findIndex(
+  const index = pinnedTabs.findIndex(
     (pinnedTab) => pinnedTab.id === selectedTab.id,
   );
 
@@ -119,7 +119,7 @@ function openPinnedTabUrlsInWindow(pinnedTabUrls, window) {
 async function updateTabsWithUrls(tabs, urls) {
   return Promise.all(
     IterUtil.mapzip({ tab: tabs, url: urls }).map(async ({ tab, url }) => {
-      if (tab.id) await Chrome.tabs.update(tab.id, { url });
+      if (tab.id != null) await Chrome.tabs.update(tab.id, { url });
     }),
   );
 }
@@ -129,8 +129,11 @@ async function updateTabsWithUrls(tabs, urls) {
  * @param {browser.windows.Window} window
  */
 async function movePinnedTabsToWindow(tabs, window) {
-  let endOfWindow = { windowId: window.id, index: -1 };
-  Chrome.tabs.move(IterUtil.compact(tabs.map((tab) => tab.id)), endOfWindow);
+  const endOfWindow = { windowId: window.id, index: -1 };
+  await Chrome.tabs.move(
+    IterUtil.compact(tabs.map((tab) => tab.id)),
+    endOfWindow,
+  );
   const newTabs = await Chrome.tabs.getAllInWindow(window.id);
   const tabsToPin = newTabs.slice(newTabs.length - tabs.length);
   await Promise.all(
@@ -152,9 +155,9 @@ async function removeTabs(tabs) {
  * @returns {Promise<"fresh-reset" | "moved-to-fg" | "no-action">}
  */
 async function bringPinnedTabsForward() {
-  let frontmostWindow = await FrontmostWindow.get();
-  let [pinnedTabWindow, pinnedTabs] = await PinnedTabWindowAndTabs.get();
-  let pinnedTabUrls = await PinnedTabUrls.get();
+  const frontmostWindow = await FrontmostWindow.get();
+  const [pinnedTabWindow, pinnedTabs] = await PinnedTabWindowAndTabs.get();
+  const pinnedTabUrls = await PinnedTabUrls.get();
 
   if (pinnedTabs.length !== pinnedTabUrls.length) {
     // If the wrong number of tabs are open, close and reopen all of them.
@@ -173,12 +176,12 @@ async function bringPinnedTabsForward() {
     await movePinnedTabsToWindow(pinnedTabs, frontmostWindow);
 
     // Close all new tab pages in the old window.
-    let isNewTabPageInWindow = {
+    const isNewTabPageInWindow = {
       windowId: pinnedTabWindow.id,
       pinned: false,
       url: "chrome://newtab/",
     };
-    let tabs = await Chrome.tabs.query(isNewTabPageInWindow);
+    const tabs = await Chrome.tabs.query(isNewTabPageInWindow);
     await removeTabs(tabs);
 
     return "moved-to-fg";
@@ -189,21 +192,26 @@ async function bringPinnedTabsForward() {
 
 /** Reload the configured pinned tab URLs into the existing pinned tabs. */
 async function reloadPinnedTabUrlsIntoCurrentPinnedTabs() {
-  let [, pinnedTabs] = await PinnedTabWindowAndTabs.get();
-  let pinnedTabUrls = await PinnedTabUrls.get();
+  const [, pinnedTabs] = await PinnedTabWindowAndTabs.get();
+  const pinnedTabUrls = await PinnedTabUrls.get();
 
   await updateTabsWithUrls(pinnedTabs, pinnedTabUrls);
 }
 
 /** Reload the configured pinned tab URLs into the existing pinned tabs. */
 async function reloadPinnedTabUrlsIntoCurrentTab() {
-  let [, pinnedTabs] = await PinnedTabWindowAndTabs.get();
-  let pinnedTabUrls = await PinnedTabUrls.get();
-  let i = await CurrentPinnedTabIndex.get();
+  const [, pinnedTabs] = await PinnedTabWindowAndTabs.get();
+  const pinnedTabUrls = await PinnedTabUrls.get();
+  const index = await CurrentPinnedTabIndex.get();
 
-  if (i === undefined) return;
+  if (index === undefined) return;
 
-  await updateTabsWithUrls([pinnedTabs[i]], [pinnedTabUrls[i]]);
+  const currentPinnedTab = pinnedTabs[index];
+  const currentPinnedTabUrl = pinnedTabUrls[index];
+
+  if (!currentPinnedTab || !currentPinnedTabUrl) return;
+
+  await updateTabsWithUrls([currentPinnedTab], [currentPinnedTabUrl]);
 }
 
 /**
@@ -216,15 +224,15 @@ async function reloadPinnedTabUrlsIntoCurrentTab() {
  *   - Negative index counts from the right. (-1 = last tab.)
  */
 async function focusNormalTabAtIndex(index) {
-  let tabs = await TabsInFrontmostWindow.get();
+  const tabs = await TabsInFrontmostWindow.get();
 
-  let countPinned = tabs.filter((tab) => tab.pinned).length;
+  const countPinned = tabs.filter((tab) => tab.pinned).length;
 
-  let actualIndex = index < 0 ? tabs.length + index : countPinned + index;
-  let tab = tabs[actualIndex];
+  const actualIndex = index < 0 ? tabs.length + index : countPinned + index;
+  const tab = tabs[actualIndex];
 
   if (!tab) return;
-  if (!tab.windowId) return;
+  if (tab.windowId == null) return;
 
   await Chrome.tabs.highlight({ windowId: tab.windowId, tabs: actualIndex });
   await Chrome.windows.update(tab.windowId, { focused: true });
@@ -238,16 +246,18 @@ async function focusNormalTabAtIndex(index) {
  *   - Tabs are 0-indexed.
  */
 async function focusedOrReloadPinnedTabAtIndex(index) {
-  let [, pinnedTabs] = await PinnedTabWindowAndTabs.get();
-  let tab = pinnedTabs[index];
-  if (!tab || !tab.windowId || !tab.pinned) return;
+  const [, pinnedTabs] = await PinnedTabWindowAndTabs.get();
+  const tab = pinnedTabs[index];
+  if (!tab || tab.windowId == null || !tab.pinned) return;
 
-  let window = await Chrome.windows.get(tab.windowId);
+  const window = /** @type {browser.windows.Window | undefined} */ (
+    await Chrome.windows.get(tab.windowId)
+  );
   if (!window) return;
 
   // TODO: CurrentPinnedTabIndex should already account for whether Chrome is
   // frontmost. If it is not, it should return `undefined`.
-  let currentPinnedTabIndex = await CurrentPinnedTabIndex.get();
+  const currentPinnedTabIndex = await CurrentPinnedTabIndex.get();
   if (window.focused && currentPinnedTabIndex === index) {
     await reloadPinnedTabUrlsIntoCurrentTab();
   } else {
@@ -256,26 +266,26 @@ async function focusedOrReloadPinnedTabAtIndex(index) {
   }
 }
 
-let clickBrowserAction = new TimerUtil.DoubleAction({
+const clickBrowserAction = new TimerUtil.DoubleAction({
   timeout: 300,
   onSingle: async () => {
     resetAllCaches();
-    let action = await bringPinnedTabsForward();
+    const action = await bringPinnedTabsForward();
     if (action === "no-action") {
-      reloadPinnedTabUrlsIntoCurrentTab();
+      await reloadPinnedTabUrlsIntoCurrentTab();
     }
   },
   onDouble: async () => {
     resetAllCaches();
-    let action = await bringPinnedTabsForward();
+    const action = await bringPinnedTabsForward();
     if (action === "no-action" || action === "moved-to-fg") {
-      reloadPinnedTabUrlsIntoCurrentPinnedTabs();
+      await reloadPinnedTabUrlsIntoCurrentPinnedTabs();
     }
   },
 });
 
 // Called when the user clicks on the browser action.
-chrome.browserAction.onClicked.addListener((_tab) => {
+chrome.browserAction.onClicked.addListener(() => {
   clickBrowserAction.trigger();
 });
 
@@ -285,48 +295,68 @@ chrome.commands.onCommand.addListener(
 
     switch (command) {
       // Active normal tabs.
-      case "activate-normal-tab-0":
+      case "activate-normal-tab-0": {
         return focusNormalTabAtIndex(0);
-      case "activate-normal-tab-1":
+      }
+      case "activate-normal-tab-1": {
         return focusNormalTabAtIndex(1);
-      case "activate-normal-tab-2":
+      }
+      case "activate-normal-tab-2": {
         return focusNormalTabAtIndex(2);
-      case "activate-normal-tab-3":
+      }
+      case "activate-normal-tab-3": {
         return focusNormalTabAtIndex(3);
-      case "activate-normal-tab-4":
+      }
+      case "activate-normal-tab-4": {
         return focusNormalTabAtIndex(4);
-      case "activate-normal-tab-5":
+      }
+      case "activate-normal-tab-5": {
         return focusNormalTabAtIndex(5);
-      case "activate-normal-tab-6":
+      }
+      case "activate-normal-tab-6": {
         return focusNormalTabAtIndex(6);
-      case "activate-normal-tab-7":
+      }
+      case "activate-normal-tab-7": {
         return focusNormalTabAtIndex(7);
-      case "activate-normal-tab-8":
+      }
+      case "activate-normal-tab-8": {
         return focusNormalTabAtIndex(8);
-      case "activate-normal-tab-last":
+      }
+      case "activate-normal-tab-last": {
         return focusNormalTabAtIndex(-1);
+      }
 
       // Active pinned tabs.
-      case "activate-pinned-tab-0":
+      case "activate-pinned-tab-0": {
         return focusedOrReloadPinnedTabAtIndex(0);
-      case "activate-pinned-tab-1":
+      }
+      case "activate-pinned-tab-1": {
         return focusedOrReloadPinnedTabAtIndex(1);
-      case "activate-pinned-tab-2":
+      }
+      case "activate-pinned-tab-2": {
         return focusedOrReloadPinnedTabAtIndex(2);
-      case "activate-pinned-tab-3":
+      }
+      case "activate-pinned-tab-3": {
         return focusedOrReloadPinnedTabAtIndex(3);
-      case "activate-pinned-tab-4":
+      }
+      case "activate-pinned-tab-4": {
         return focusedOrReloadPinnedTabAtIndex(4);
-      case "activate-pinned-tab-5":
+      }
+      case "activate-pinned-tab-5": {
         return focusedOrReloadPinnedTabAtIndex(5);
-      case "activate-pinned-tab-6":
+      }
+      case "activate-pinned-tab-6": {
         return focusedOrReloadPinnedTabAtIndex(6);
-      case "activate-pinned-tab-7":
+      }
+      case "activate-pinned-tab-7": {
         return focusedOrReloadPinnedTabAtIndex(7);
-      case "activate-pinned-tab-8":
+      }
+      case "activate-pinned-tab-8": {
         return focusedOrReloadPinnedTabAtIndex(8);
-      case "activate-pinned-tab-9":
+      }
+      case "activate-pinned-tab-9": {
         return focusedOrReloadPinnedTabAtIndex(9);
+      }
       default:
     }
   },

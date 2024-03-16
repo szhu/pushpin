@@ -3,23 +3,24 @@
 /**
  * Make a promise-returning versions of the chrome API method.
  *
- * @param {any} thisObj
+ * @param {any} thisObject
  * @param {Function} method
  * @param {string} methodName
  */
-export function makePromiseVersion(thisObj, method, methodName) {
-  return async (/** @type {any[]} */ ...args) => {
-    let result = await new Promise((resolve) => {
-      method.apply(thisObj, [...args, resolve]);
+export function makePromiseVersion(thisObject, method, methodName) {
+  return async (/** @type {any[]} */ ...arguments_) => {
+    const result = await new Promise((resolve) => {
+      method.apply(thisObject, [...arguments_, resolve]);
     });
     if (chrome.runtime.lastError == null) return result;
 
-    let errorContext = {
+    const errorContext = {
       function: methodName,
-      arguments: args,
+      arguments: arguments_,
       error: chrome.runtime.lastError,
     };
-    throw errorContext;
+    console.error("Error in Chrome API call", errorContext);
+    throw new Error("Error in Chrome API call");
   };
 }
 
@@ -27,34 +28,36 @@ export function makePromiseVersion(thisObj, method, methodName) {
  * Make a promise-returning versions of the chrome API method, given a string
  * like "chrome.windows.create".
  *
- * @param {Object} dstRoot
+ * @param {{[key: string]: any}} dstRoot
  * @param {string} fullMethodName
  */
 export function assignPromiseVersionByMethodName(dstRoot, fullMethodName) {
   // Example: let fullMethodName = 'chrome.some.thing.tabs.create'
-  let methodParentParts = fullMethodName.split(".");
+  const methodParentParts = fullMethodName.split(".");
   // Now methodParentParts == ['chrome', 'some', 'thing', 'tabs', 'create']
 
-  let [methodName] = methodParentParts.splice(-1);
+  const [methodName] = methodParentParts.splice(-1);
   // Now methodParentParts == ['chrome', 'some', 'thing', 'tabs']
   // Now methodName == 'create'
 
-  let srcParent = /** @type {Object} */ (window);
-  for (let methodParentPart of methodParentParts) {
-    srcParent = srcParent[methodParentPart];
+  if (!methodName) throw new Error("Invalid method name: " + fullMethodName);
+
+  let sourceParent = /** @type {{[key: string]: any}} */ (window);
+  for (const methodParentPart of methodParentParts) {
+    sourceParent = sourceParent[methodParentPart];
   }
   // Now srcParent == window.chrome.some.thing.tabs
   // srcMethod = srcParent[methodName]; // TODO: is this line necessary?
 
   let dstParent = dstRoot;
-  for (let methodParentPart of methodParentParts.slice(1)) {
+  for (const methodParentPart of methodParentParts.slice(1)) {
     if (dstParent[methodParentPart] == null) dstParent[methodParentPart] = {};
     dstParent = dstParent[methodParentPart];
   }
   // Now dstParent == dstRoot.some.thing.tabs
   dstParent[methodName] = makePromiseVersion(
-    srcParent,
-    srcParent[methodName],
+    sourceParent,
+    sourceParent[methodName],
     fullMethodName,
   );
 }
@@ -64,8 +67,8 @@ export function assignPromiseVersionByMethodName(dstRoot, fullMethodName) {
  * @returns {typeof browser}
  */
 export function getPromiseVersions(fullMethodNames) {
-  let dstRoot = {};
-  for (let fullMethodName of fullMethodNames) {
+  const dstRoot = {};
+  for (const fullMethodName of fullMethodNames) {
     assignPromiseVersionByMethodName(dstRoot, fullMethodName);
   }
   return /** @type {typeof browser} */ (dstRoot);

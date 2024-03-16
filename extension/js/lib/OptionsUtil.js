@@ -30,9 +30,9 @@ export async function save() {
   // loading, this line should result in a similar failure and hint to the user
   // that something is wrong.
   Elements.InputUrls.value = "(Error saving or loading!)";
-  restore();
+  await restore();
 
-  flashStatus("Options saved.", 2000);
+  void flashStatus("Options saved.", 2000);
 }
 
 /**
