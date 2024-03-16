@@ -1,6 +1,6 @@
+import { $ } from "./QuerySelectorUtil.js";
 import * as TimerUtil from "./TimerUtil.js";
 import * as Urls from "./Urls.js";
-import { $ } from "./QuerySelectorUtil.js";
 
 export const Elements = {
   InputUrls: /** @type {HTMLTextAreaElement} */ ($("#js-input-urls")),
@@ -30,9 +30,9 @@ export async function save() {
   // loading, this line should result in a similar failure and hint to the user
   // that something is wrong.
   Elements.InputUrls.value = "(Error saving or loading!)";
-  restore();
+  await restore();
 
-  flashStatus("Options saved.", 2000);
+  void flashStatus("Options saved.", 2000);
 }
 
 /**

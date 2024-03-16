@@ -1,6 +1,9 @@
 class CancellablePromise extends Promise {
   /**
-   * @param {(resolve: ()=>void, reject: ()=>void) => void} init
+   * @param {(
+   *   resolve: (value?: undefined) => void,
+   *   reject: () => void,
+   * ) => void} init
    * @param {() => void} cancel
    */
   constructor(init, cancel) {
@@ -23,13 +26,13 @@ export function setTimeout(timeout) {
   let timerId;
   /** @type {() => void} */
   let rejectFunction;
-  /** @type {(resolve: ()=>void, reject: ()=>void) => void} */
-  let init = (resolve, reject) => {
+  /** @type {(resolve: () => void, reject: () => void) => void} */
+  const init = (resolve, reject) => {
     timerId = window.setTimeout(resolve, timeout);
     rejectFunction = reject;
   };
-  let cancel = () => {
-    clearTimeout(timerId);
+  const cancel = () => {
+    window.clearTimeout(timerId);
     rejectFunction();
   };
   return new CancellablePromise(init, cancel);
@@ -46,33 +49,37 @@ export function pollUntil(interval, stopCondition) {
   let intervalId;
   /** @type {() => void} */
   let rejectFunction;
-  /** @type {(resolve: ()=>void, reject: ()=>void) => void} */
-  let init = (resolve, reject) => {
-    intervalId = setInterval(() => {
+  /** @type {(resolve: () => void, reject: () => void) => void} */
+  const init = (resolve, reject) => {
+    intervalId = window.setInterval(() => {
       if (stopCondition()) {
-        clearInterval(intervalId);
+        window.clearInterval(intervalId);
         resolve();
       }
     }, interval);
     rejectFunction = reject;
   };
-  let cancel = () => {
+  const cancel = () => {
     window.clearInterval(intervalId);
     rejectFunction();
   };
   return new CancellablePromise(init, cancel);
 }
 
-/**
- * Detect double-clicking-like actions.
- */
+/** Detect double-clicking-like actions. */
 export class DoubleAction {
   /**
-   * @param {{timeout: number, onSingle: () => void, onDouble: () => void}} opts
+   * @param {{
+   *   timeout: number;
+   *   onSingle: () => void;
+   *   onDouble: () => void;
+   * }} opts
    */
   constructor({ timeout, onSingle, onDouble }) {
     if (!(this instanceof DoubleAction)) {
-      throw new Error("TimerUtil.DoubleAction must be initialized using new");
+      throw new TypeError(
+        "TimerUtil.DoubleAction must be initialized using new",
+      );
     }
     this.timeout = timeout;
     this.onSingle = onSingle;
@@ -80,26 +87,24 @@ export class DoubleAction {
     this.timeoutId = undefined;
   }
 
-  /**
-   * @param {() => void} callback
-   */
+  /** @param {() => void} callback */
   _dispatch = (callback) => {
-    clearTimeout(this.timeoutId);
+    window.clearTimeout(this.timeoutId);
     this.timeoutId = undefined;
     callback();
   };
 
   trigger = () => {
     // console.log("Click!");
-    if (this.timeoutId != null) {
-      // console.log("Double!");
-      this._dispatch(this.onDouble);
-    } else {
+    if (this.timeoutId == null) {
       // console.log("Starting timer...");
       this.timeoutId = window.setTimeout(() => {
         // console.log("Single!");
         this._dispatch(this.onSingle);
       }, this.timeout);
+    } else {
+      // console.log("Double!");
+      this._dispatch(this.onDouble);
     }
   };
 }

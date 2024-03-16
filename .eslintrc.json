@@ -4,29 +4,266 @@
     "es6": true,
     "webextensions": true
   },
-  "extends": ["airbnb-base", "prettier"],
-  "globals": {
-    "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly"
-  },
-  "parser": "babel-eslint",
+  "extends": [
+    //
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/strict-type-checked",
+    "plugin:consistent-default-export-name/fixed",
+    "plugin:unicorn/recommended",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 2018,
+    "ecmaVersion": "latest",
+    "project": "tsconfig.json",
     "sourceType": "module"
   },
-  "plugins": ["only-warn", "sort-imports-es6-autofix"],
+  "plugins": [
+    //
+    "import",
+    "prefer-smart-quotes"
+  ],
+  "root": true,
   "rules": {
-    "import/extensions": ["error", "always"],
-    "import/no-default-export": "error",
-    "import/prefer-default-export": "off",
-    "no-plusplus": "off",
-    "no-restricted-syntax": ["error", "LabeledStatement", "WithStatement"],
-    "no-throw-literal": "off",
-    "no-underscore-dangle": "off",
-    "no-unused-vars": "off",
-    "prefer-const": "off",
-    "prefer-promise-reject-errors": "off",
-    "sort-imports-es6-autofix/sort-imports-es6": "error",
-    "sort-imports": "error"
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "format": [
+          "strictCamelCase",
+          "StrictPascalCase"
+        ],
+        "leadingUnderscore": "allow",
+        "selector": "variable",
+        "trailingUnderscore": "allow"
+      },
+      {
+        "format": null,
+        "modifiers": [
+          "destructured"
+        ],
+        "selector": "variable"
+      },
+      {
+        "format": [
+          "PascalCase"
+        ],
+        "prefix": [
+          "is",
+          "should",
+          "has",
+          "can",
+          "did",
+          "will"
+        ],
+        "selector": "variable",
+        "types": [
+          "boolean"
+        ]
+      }
+    ],
+    "@typescript-eslint/no-misused-promises": [
+      "off"
+      // Why: It's useful to have async functions as listeners.
+    ],
+    "@typescript-eslint/no-unnecessary-condition": [
+      "error",
+      {
+        "allowConstantLoopConditions": true
+      }
+    ],
+    "@typescript-eslint/no-unsafe-argument": [
+      "off"
+      // Why: There's no quick way to turn off this rule.
+    ],
+    "@typescript-eslint/no-unsafe-assignment": [
+      "off"
+      // Why: There's no quick way to turn off this rule.
+    ],
+    "@typescript-eslint/no-unsafe-call": [
+      "off"
+      // Why: There appear to be some false positives.
+    ],
+    "@typescript-eslint/no-unsafe-member-access": [
+      "off"
+      // Why: There's no quick way to turn off this rule.
+    ],
+    "@typescript-eslint/no-unsafe-return": [
+      "off"
+      // Why: There's no quick way to turn off this rule.
+    ],
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/strict-boolean-expressions": [
+      "error",
+      {
+        "allowAny": true,
+        "allowNullableBoolean": true,
+        "allowNullableObject": true,
+        "allowNullableString": true
+      }
+    ],
+    "consistent-default-export-name/default-import-match-filename": [
+      "error"
+    ],
+    "eqeqeq": [
+      "error",
+      "always",
+      {
+        "null": "ignore"
+      }
+    ],
+    "import/extensions": [
+      "error",
+      "always"
+    ],
+    "no-constant-condition": [
+      "off"
+      // Why: Duplicate of @typescript-eslint/no-unnecessary-condition.
+    ],
+    "no-empty": "warn",
+    "no-restricted-globals": [
+      "error",
+      // Require global variable names to be prefixed with `window.` This
+      // prevents people from, for example, using a variable called `name` when
+      // they actually forgot to define it.
+      //
+      // As far as I know, there is no way to only allow some globals. So
+      // instead we start with the list of all globals (extracted from
+      // lib.dom.d.ts), and ban all of them except the ones we want (commented
+      // out below).
+      "clientInformation",
+      "closed",
+      "customElements",
+      "devicePixelRatio",
+      // "document",
+      "event",
+      "external",
+      "frameElement",
+      "frames",
+      "history",
+      "innerHeight",
+      "innerWidth",
+      "length",
+      "location",
+      "locationbar",
+      "menubar",
+      "name",
+      // "navigator",
+      "ondevicemotion",
+      "ondeviceorientation",
+      "onorientationchange",
+      "opener",
+      "orientation",
+      "outerHeight",
+      "outerWidth",
+      "pageXOffset",
+      "pageYOffset",
+      "parent",
+      "personalbar",
+      "screen",
+      "screenLeft",
+      "screenTop",
+      "screenX",
+      "screenY",
+      "scrollX",
+      "scrollY",
+      "scrollbars",
+      "self",
+      "speechSynthesis",
+      "status",
+      "statusbar",
+      "toolbar",
+      "top",
+      "visualViewport",
+      // "window",
+      "alert",
+      "blur",
+      "cancelIdleCallback",
+      "captureEvents",
+      "close",
+      "confirm",
+      "focus",
+      "getComputedStyle",
+      "getSelection",
+      "matchMedia",
+      "moveBy",
+      "moveTo",
+      "open",
+      "postMessage",
+      "print",
+      "prompt",
+      "releaseEvents",
+      "requestIdleCallback",
+      "resizeBy",
+      "resizeTo",
+      "scroll",
+      "scrollBy",
+      "scrollTo",
+      "stop",
+      "toString",
+      "dispatchEvent",
+      "cancelAnimationFrame",
+      "requestAnimationFrame",
+      "atob",
+      "btoa",
+      "clearInterval",
+      "clearTimeout",
+      "createImageBitmap",
+      "fetch",
+      "queueMicrotask",
+      "reportError",
+      "setInterval",
+      "setTimeout",
+      "structuredClone",
+      "sessionStorage",
+      "addEventListener",
+      "removeEventListener"
+    ],
+    "no-undef": [
+      "off"
+      // Why: Duplicate of a check performed by tsc.
+    ],
+    "no-unused-vars": [
+      "off"
+      // Why: Duplicate of @typescript-eslint/no-unused-vars.
+    ],
+    "prefer-const": "error",
+    "prefer-smart-quotes/prefer": [
+      "error",
+      "all"
+    ],
+    "unicorn/filename-case": [
+      "error",
+      {
+        "cases": {
+          "camelCase": true,
+          "pascalCase": true
+        }
+      }
+    ],
+    "unicorn/no-null": [
+      "off"
+      // Why: Not ts-compatible: this rule will suggest using `undefined` even
+      // if an argument is typed as `null`.
+    ],
+    "unicorn/no-useless-undefined": [
+      "error",
+      {
+        "checkArguments": false
+      }
+    ],
+    "unicorn/prevent-abbreviations": [
+      "error",
+      {
+        "allowList": {
+          "dst": true,
+          "props": true,
+          "ref": true
+        },
+        "ignore": [
+          ".*Ref"
+        ]
+      }
+    ]
   }
 }

@@ -1,13 +1,5 @@
 {
-  "printWidth": 80,
-  "tabWidth": 2,
-  "semi": true,
-  "bracketSpacing": true,
-  "singleQuote": false,
-  "trailingComma": "all",
-  "arrowParens": "always",
-  "proseWrap": "always",
-
+  "jsonRecursiveSort": true,
   "overrides": [
     {
       "files": "*.json",
@@ -15,5 +7,11 @@
         "printWidth": 0
       }
     }
-  ]
+  ],
+  "plugins": [
+    "prettier-plugin-jsdoc",
+    "prettier-plugin-packagejson",
+    "prettier-plugin-sort-json"
+  ],
+  "proseWrap": "always"
 }

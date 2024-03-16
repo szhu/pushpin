@@ -6,7 +6,7 @@
 export class LazyStateCache {
   /**
    * @private
-   * @type {(() => T)}
+   * @type {() => T}
    */
   getter;
 
@@ -16,9 +16,7 @@ export class LazyStateCache {
    */
   cachedValue = undefined;
 
-  /**
-   * @param {(() => T)} getter
-   */
+  /** @param {() => T} getter */
   constructor(getter) {
     this.getter = getter;
   }
@@ -35,9 +33,7 @@ export class LazyStateCache {
     return this.cachedValue;
   }
 
-  /**
-   * Forget the memoized value.
-   */
+  /** Forget the memoized value. */
   forget() {
     this.cachedValue = undefined;
   }
