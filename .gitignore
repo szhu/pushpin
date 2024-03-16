@@ -1,7 +1,6 @@
-/extension.crx
-/extension.pem
-/extension.zip
+/dist
 /node_modules
 /package-lock.json
 /pnpm-lock.yaml
+/tsconfig.tsbuildinfo
 /yarn.lock

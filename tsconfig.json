@@ -2,6 +2,7 @@
   "compilerOptions": {
     "allowJs": true,
     "checkJs": true,
+    "incremental": true,
     "lib": [
       "dom",
       "es2018"
