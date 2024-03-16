@@ -1,0 +1,14 @@
+{
+  "*.{css,json,html,md}": [
+    "prettier --write"
+  ],
+  "*.{js,jsx,mjs,ts,tsx}": [
+    "true # https://github.com/lint-staged/lint-staged/issues/968#issuecomment-1011403980",
+    "sh -c 'git stash push --message pre-tsc --keep-index --include-untracked'",
+    "sh -c 'yarn tsc --pretty; STATUS=$?; git stash pop --quiet; exit $STATUS'",
+    "true",
+    "eslint --fix",
+    "prettier --write",
+    "prettier --write --plugin prettier-plugin-organize-imports"
+  ]
+}

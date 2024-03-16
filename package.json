@@ -1,19 +1,8 @@
 {
   "private": true,
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged && tsc"
-    }
-  },
-  "lint-staged": {
-    "*.{css,json,md}": [
-      "prettier --write",
-      "git add"
-    ],
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ]
+  "scripts": {
+    "build": "sh scripts/build.sh",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@types/chrome": "0.0.83",
