@@ -1,20 +1,20 @@
 {
   "private": true,
   "devDependencies": {
-    "@types/chrome": "0.0.83",
-    "@types/firefox-webext-browser": "67.0.1",
-    "babel-eslint": "10.0.1",
-    "eslint": "5.16.0",
-    "eslint-config-airbnb-base": "13.1.0",
-    "eslint-config-prettier": "4.2.0",
-    "eslint-plugin-import": "2.17.2",
-    "eslint-plugin-only-warn": "1.0.1",
-    "eslint-plugin-sort-imports-es6-autofix": "0.4.0",
-    "husky": "2.1.0",
-    "lint-staged": "8.1.5",
-    "markdownlint": "0.13.0",
-    "prettier": "1.17.0",
-    "typescript": "3.4.5"
+    "@types/chrome": "0.0.263",
+    "@types/firefox-webext-browser": "120.0.3",
+    "babel-eslint": "10.1.0",
+    "eslint": "8.57.0",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-import": "2.29.1",
+    "eslint-plugin-only-warn": "1.1.0",
+    "eslint-plugin-sort-imports-es6-autofix": "0.6.0",
+    "husky": "9.0.11",
+    "lint-staged": "15.2.2",
+    "markdownlint": "0.33.0",
+    "prettier": "3.2.5",
+    "typescript": "5.4.2"
   },
   "husky": {
     "hooks": {
