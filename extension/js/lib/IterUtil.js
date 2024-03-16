@@ -32,7 +32,7 @@ export function zip(rows) {
  *      mapzip({num: [1, 2, 3], str: ["a", "b", "c"]})
  *      => [{num: 1, str: "a"}, {num: 2, str: "b"}, {num: 3, str: "c"}]
  *
- * @template {{[key: string]: any}} T
+ * @template {{ [key: string]: any }} T
  * @param {{ [key in keyof T]: T[key][] }} unzipped
  * @returns {T[]}
  */

@@ -1,6 +1,6 @@
 class CancellablePromise extends Promise {
   /**
-   * @param {(resolve: ()=>void, reject: ()=>void) => void} init
+   * @param {(resolve: () => void, reject: () => void) => void} init
    * @param {() => void} cancel
    */
   constructor(init, cancel) {
@@ -23,7 +23,7 @@ export function setTimeout(timeout) {
   let timerId;
   /** @type {() => void} */
   let rejectFunction;
-  /** @type {(resolve: ()=>void, reject: ()=>void) => void} */
+  /** @type {(resolve: () => void, reject: () => void) => void} */
   let init = (resolve, reject) => {
     timerId = window.setTimeout(resolve, timeout);
     rejectFunction = reject;
@@ -46,7 +46,7 @@ export function pollUntil(interval, stopCondition) {
   let intervalId;
   /** @type {() => void} */
   let rejectFunction;
-  /** @type {(resolve: ()=>void, reject: ()=>void) => void} */
+  /** @type {(resolve: () => void, reject: () => void) => void} */
   let init = (resolve, reject) => {
     intervalId = setInterval(() => {
       if (stopCondition()) {
@@ -63,12 +63,14 @@ export function pollUntil(interval, stopCondition) {
   return new CancellablePromise(init, cancel);
 }
 
-/**
- * Detect double-clicking-like actions.
- */
+/** Detect double-clicking-like actions. */
 export class DoubleAction {
   /**
-   * @param {{timeout: number, onSingle: () => void, onDouble: () => void}} opts
+   * @param {{
+   *   timeout: number;
+   *   onSingle: () => void;
+   *   onDouble: () => void;
+   * }} opts
    */
   constructor({ timeout, onSingle, onDouble }) {
     if (!(this instanceof DoubleAction)) {
@@ -80,9 +82,7 @@ export class DoubleAction {
     this.timeoutId = undefined;
   }
 
-  /**
-   * @param {() => void} callback
-   */
+  /** @param {() => void} callback */
   _dispatch = (callback) => {
     clearTimeout(this.timeoutId);
     this.timeoutId = undefined;

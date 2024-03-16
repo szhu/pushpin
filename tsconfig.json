@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-    "target": "es2018",
-    "module": "commonjs",
+    "allowJs": true,
+    "checkJs": true,
     "lib": [
       "dom",
       "es2018"
     ],
-    "allowJs": true,
-    "checkJs": true,
+    "module": "commonjs",
     "noEmit": true,
-    "strict": true
+    "strict": true,
+    "target": "es2018"
   }
 }

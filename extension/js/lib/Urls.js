@@ -38,9 +38,7 @@ export async function saveText(urlsAsText) {
   await Chrome.storage.sync.set({ urls: normalize(urlsAsText) });
 }
 
-/**
- * @returns {Promise<string[]>}
- */
+/** @returns {Promise<string[]>} */
 export async function load() {
   let { urls } = await Chrome.storage.sync.get({ urls: "" });
   return parse(urls);

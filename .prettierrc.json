@@ -1,6 +1,5 @@
 {
   "jsonRecursiveSort": true,
-  "proseWrap": "always",
   "overrides": [
     {
       "files": "*.json",
@@ -13,5 +12,6 @@
     "prettier-plugin-jsdoc",
     "prettier-plugin-packagejson",
     "prettier-plugin-sort-json"
-  ]
+  ],
+  "proseWrap": "always"
 }

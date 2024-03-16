@@ -1,6 +1,6 @@
+import { $ } from "./QuerySelectorUtil.js";
 import * as TimerUtil from "./TimerUtil.js";
 import * as Urls from "./Urls.js";
-import { $ } from "./QuerySelectorUtil.js";
 
 export const Elements = {
   InputUrls: /** @type {HTMLTextAreaElement} */ ($("#js-input-urls")),
