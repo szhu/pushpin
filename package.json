@@ -16,15 +16,14 @@
     ]
   },
   "devDependencies": {
-    "@types/chrome": "0.0.263",
-    "@types/firefox-webext-browser": "120.0.3",
-    "babel-eslint": "10.1.0",
+    "@types/chrome": "0.0.83",
+    "@types/firefox-webext-browser": "67.0.1",
     "eslint": "8.57.0",
-    "eslint-config-airbnb-base": "15.0.0",
     "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-consistent-default-export-name": "0.0.15",
     "eslint-plugin-import": "2.29.1",
-    "eslint-plugin-only-warn": "1.1.0",
-    "eslint-plugin-sort-imports-es6-autofix": "0.6.0",
+    "eslint-plugin-prefer-smart-quotes": "2.0.0",
+    "eslint-plugin-unicorn": "51.0.1",
     "husky": "9.0.11",
     "lint-staged": "15.2.2",
     "markdownlint": "0.33.0",
@@ -33,6 +32,7 @@
     "prettier-plugin-organize-imports": "3.2.4",
     "prettier-plugin-packagejson": "2.4.12",
     "prettier-plugin-sort-json": "3.1.0",
-    "typescript": "5.4.2"
+    "typescript": "5.4.2",
+    "typescript-eslint": "7.2.0"
   }
 }
